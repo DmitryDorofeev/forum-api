@@ -1,12 +1,14 @@
 from api.tools.entities import forums, posts, threads
-from flask import Blueprint
-from api.helpers import related_exists, choose_required, intersection
+from flask import Blueprint, request
+from api.helpers import related_exists, choose_required, intersection, get_json
 import json
 
 module = Blueprint('forum', __name__, url_prefix='/forum')
 
-def create(request):
-    content = json.loads(request.body)
+
+@module.route("/create/", methods=["POST"])
+def create():
+    content = request.json
     required_data = ["name", "short_name", "user"]
     try:
         choose_required(data=content, required=required_data)
@@ -17,8 +19,9 @@ def create(request):
     return json.dumps({"code": 0, "response": forum})
 
 
-def details(request):
-    get_params = request.GET.dict()
+@module.route("/details/", methods=["GET"])
+def details():
+    get_params = get_json(request)
     required_data = ["forum"]
     related = related_exists(get_params)
     try:
@@ -29,22 +32,24 @@ def details(request):
     return json.dumps({"code": 0, "response": forum})
 
 
-def list_threads(request):
-    content = request.GET.dict()
+@module.route("/listThreads/", methods=["GET"])
+def list_threads():
+    content = get_json(request)
     required_data = ["forum"]
     related = related_exists(content)
     optional = intersection(request=content, values=["limit", "order", "since"])
     try:
         choose_required(data=content, required=required_data)
-        threads_l = threads.threads_list(entity="forum", identifier=content["forum"],
+        threads_l = threads.thread_list(entity="forum", identifier=content["forum"],
                                          related=related, params=optional)
     except Exception as e:
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": threads_l})
 
 
-def list_posts(request):
-    content = request.GET.dict()
+@module.route("/listPosts/", methods=["GET"])
+def list_posts():
+    content = get_json(request)
     required_data = ["forum"]
     related = related_exists(content)
 
@@ -58,8 +63,9 @@ def list_posts(request):
     return json.dumps({"code": 0, "response": posts_l})
 
 
-def list_users(request):
-    content = request.GET.dict()
+@module.route("/listUsers/", methods=["GET"])
+def list_users():
+    content = get_json(request)
     required_data = ["forum"]
     optional = intersection(request=content, values=["limit", "order", "since_id"])
     try:

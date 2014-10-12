@@ -1,12 +1,14 @@
 from api.tools.entities import posts, threads, subscriptions
-from flask import Blueprint
-from api.helpers import related_exists, choose_required, intersection
+from flask import Blueprint, request
+from api.helpers import related_exists, choose_required, intersection, get_json
 import json
 
 module = Blueprint('thread', __name__, url_prefix='/thread')
 
-def create(request):
-    content = json.loads(request.body)
+
+@module.route("/create/", methods=["POST"])
+def create():
+    content = request.json
     required_data = ["forum", "title", "isClosed", "user", "date", "message", "slug"]
     optional = intersection(request=content, values=["isDeleted"])
     try:
@@ -21,8 +23,9 @@ def create(request):
     return json.dumps({"code": 0, "response": thread})
 
 
-def details(request):
-    content = request.GET.dict()
+@module.route("/details/", methods=["GET"])
+def details():
+    content = get_json(request)
     required_data = ["thread"]
     related = related_exists(content)
     try:

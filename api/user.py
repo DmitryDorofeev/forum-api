@@ -91,8 +91,9 @@ def list_posts():
     return json.dumps({"code": 0, "response": posts_l})
 
 
-def update(request):
-    request_data = json.loads(request.body)
+@module.route("/update/", methods=["POST"])
+def update():
+    request_data = request.json
     required_data = ["user", "name", "about"]
     try:
         choose_required(data=request_data, required=required_data)

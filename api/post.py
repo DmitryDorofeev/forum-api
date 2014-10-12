@@ -1,13 +1,15 @@
 from api.tools.entities import posts
-from flask import Blueprint
+from flask import Blueprint, request
 import json
-from api.helpers import choose_required, intersection, related_exists
+from api.helpers import choose_required, intersection, related_exists, get_json
 
 
 module = Blueprint('post', __name__, url_prefix='/post')
 
-def create(request):
-    content = json.loads(request.body)
+
+@module.route("/create/", methods=["POST"])
+def create():
+    content = request.json
     required_data = ["user", "forum", "thread", "message", "date"]
     optional_data = ["parent", "isApproved", "isHighlighted", "isEdited", "isSpam", "isDeleted"]
     optional = intersection(request=content, values=optional_data)
@@ -21,9 +23,9 @@ def create(request):
     return json.dumps({"code": 0, "response": post})
 
 
-
-def details(request):
-    content = request.GET.dict()
+@module.route("/details/", methods=["GET"])
+def details():
+    content = get_json(request)
     required_data = ["post"]
     related = related_exists(content)
     try:

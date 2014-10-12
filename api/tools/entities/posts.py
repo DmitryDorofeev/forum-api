@@ -8,9 +8,9 @@ Helper class to manipulate with posts.
 
 
 def create(date, thread, message, user, forum, optional):
-    DBconnect.exist(entity="Threads", identifier="id", value=thread)
-    DBconnect.exist(entity="Forums", identifier="short_name", value=forum)
-    DBconnect.exist(entity="Users", identifier="email", value=user)
+    DBconnect.exist(entity="thread", identifier="id", value=thread)
+    DBconnect.exist(entity="forum", identifier="short_name", value=forum)
+    DBconnect.exist(entity="user", identifier="email", value=user)
     if len(DBconnect.select_query("SELECT thread.id as id FROM thread JOIN forum ON thread.forum = forum.short_name "
                                 "WHERE thread.forum = %s AND thread.id = %s", (forum, thread, ))) == 0:
         raise Exception("no thread with id = " + str(thread) + " in forum " + forum)
@@ -30,7 +30,7 @@ def create(date, thread, message, user, forum, optional):
 
     query += ") VALUES " + values + ")"
 
-    update_thread_posts = "UPDATE Threads SET posts = posts + 1 WHERE id = %s"
+    update_thread_posts = "UPDATE thread SET posts = posts + 1 WHERE id = %s"
 
     con = DBConnection()
     con = con.connect()
@@ -100,7 +100,7 @@ def posts_list(entity, params, identifier, related=[]):
 
 
 def remove_restore(post_id, status):
-    DBconnect.exist(entity="Posts", identifier="id", value=post_id)
+    DBconnect.exist(entity="post", identifier="id", value=post_id)
     DBconnect.update_query("UPDATE post SET isDeleted = %s WHERE post.id = %s", (status, post_id, ))
     return {
         "post": post_id
