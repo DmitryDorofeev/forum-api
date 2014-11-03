@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `forumdb`.`user` (
   `username` VARCHAR(255) NULL,
   `email` VARCHAR(255) NOT NULL,
   `isAnonymous` TINYINT(1) UNSIGNED NULL DEFAULT 0,
-  `about` VARCHAR(300) NULL,
+  `about` TEXT NULL,
   `name` VARCHAR(255) NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC))
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `forumdb`.`forum` (
   CONSTRAINT `fk_forums_users1`
     FOREIGN KEY (`user`)
     REFERENCES `forumdb`.`user` (`email`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -52,7 +52,7 @@ DROP TABLE IF EXISTS `forumdb`.`thread` ;
 CREATE TABLE IF NOT EXISTS `forumdb`.`thread` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(145) NOT NULL,
-  `date` TIMESTAMP NOT NULL,
+  `date` DATETIME NOT NULL,
   `message` TEXT NOT NULL,
   `forum` VARCHAR(45) NOT NULL,
   `user` VARCHAR(45) NOT NULL,
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `forumdb`.`thread` (
   `likes` INT UNSIGNED NOT NULL DEFAULT 0,
   `dislikes` INT UNSIGNED NOT NULL DEFAULT 0,
   `points` INT UNSIGNED NOT NULL DEFAULT 0,
-  `posts` INT UNSIGNED NOT NULL DEFAULT 0,
+  `posts` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `fk_topics_forums_idx` (`forum` ASC),
   INDEX `fk_topics_users1_idx` (`user` ASC),
@@ -88,18 +88,19 @@ DROP TABLE IF EXISTS `forumdb`.`post` ;
 CREATE TABLE IF NOT EXISTS `forumdb`.`post` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `message` TEXT NOT NULL,
-  `date` TIMESTAMP NOT NULL,
+  `date` DATETIME NOT NULL,
   `thread` INT UNSIGNED NOT NULL,
   `user` VARCHAR(45) NOT NULL,
   `parent` INT UNSIGNED NULL,
-  `approved` TINYINT UNSIGNED NOT NULL DEFAULT 0,
-  `deleted` TINYINT NOT NULL DEFAULT 0,
-  `edited` TINYINT NOT NULL DEFAULT 0,
-  `spam` TINYINT NOT NULL DEFAULT 0,
-  `highlighted` TINYINT NOT NULL DEFAULT 0,
+  `isApproved` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  `isDeleted` TINYINT NOT NULL DEFAULT 0,
+  `isEdited` TINYINT NOT NULL DEFAULT 0,
+  `isSpam` TINYINT NOT NULL DEFAULT 0,
+  `isHighlighted` TINYINT NOT NULL DEFAULT 0,
   `forum` VARCHAR(45) NOT NULL,
   `likes` INT UNSIGNED NOT NULL DEFAULT 0,
   `dislikes` INT UNSIGNED NOT NULL DEFAULT 0,
+  `points` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `fk_replies_topics1_idx` (`thread` ASC),
   INDEX `fk_replies_users1_idx` (`user` ASC),
@@ -114,17 +115,17 @@ CREATE TABLE IF NOT EXISTS `forumdb`.`post` (
   CONSTRAINT `fk_replies_users1`
     FOREIGN KEY (`user`)
     REFERENCES `forumdb`.`user` (`email`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_posts_posts1`
     FOREIGN KEY (`parent`)
     REFERENCES `forumdb`.`post` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_posts_forums1`
     FOREIGN KEY (`forum`)
     REFERENCES `forumdb`.`forum` (`short_name`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -135,21 +136,21 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `forumdb`.`subscription` ;
 
 CREATE TABLE IF NOT EXISTS `forumdb`.`subscription` (
-  `user` INT UNSIGNED NOT NULL,
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user` VARCHAR(45) NOT NULL,
   `thread` INT UNSIGNED NOT NULL,
-  `active` TINYINT UNSIGNED NOT NULL DEFAULT 1,
-  PRIMARY KEY (`user`, `thread`),
+  PRIMARY KEY (`id`),
   INDEX `fk_users_has_threads_threads1_idx` (`thread` ASC),
   INDEX `fk_users_has_threads_users1_idx` (`user` ASC),
   CONSTRAINT `fk_users_has_threads_users1`
     FOREIGN KEY (`user`)
-    REFERENCES `forumdb`.`user` (`id`)
-    ON DELETE NO ACTION
+    REFERENCES `forumdb`.`user` (`email`)
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_users_has_threads_threads1`
     FOREIGN KEY (`thread`)
     REFERENCES `forumdb`.`thread` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -160,21 +161,21 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `forumdb`.`follower` ;
 
 CREATE TABLE IF NOT EXISTS `forumdb`.`follower` (
-  `follower` INT UNSIGNED NOT NULL,
-  `followee` INT UNSIGNED NOT NULL,
-  `active` TINYINT UNSIGNED NOT NULL DEFAULT 1,
-  PRIMARY KEY (`follower`, `followee`),
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `follower` VARCHAR(45) NOT NULL,
+  `followee` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`),
   INDEX `fk_users_has_users_users3_idx` (`followee` ASC),
   INDEX `fk_users_has_users_users2_idx` (`follower` ASC),
   CONSTRAINT `fk_users_has_users_users2`
     FOREIGN KEY (`follower`)
-    REFERENCES `forumdb`.`user` (`id`)
-    ON DELETE NO ACTION
+    REFERENCES `forumdb`.`user` (`email`)
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_users_has_users_users3`
     FOREIGN KEY (`followee`)
-    REFERENCES `forumdb`.`user` (`id`)
-    ON DELETE NO ACTION
+    REFERENCES `forumdb`.`user` (`email`)
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 

@@ -52,3 +52,17 @@ def exist(entity, identifier, value):
     if not len(select_query('SELECT id FROM ' + entity + ' WHERE ' + identifier + '=%s', (value, ))):
         raise Exception("No such element in " + entity + " with " + identifier + "=" + str(value))
     return
+
+
+def execute(query):
+    # try:
+    con = DBConnection()
+    con = con.connect()
+    cursor = con.cursor()
+    cursor.execute(query)
+    con.commit()
+    cursor.close()
+    con.close()
+    # except db.Error:
+    #     raise db.Error("Database error in update query.")
+    return

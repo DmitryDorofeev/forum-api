@@ -3,7 +3,7 @@ from flask import Blueprint, request
 from api.helpers import choose_required, intersection, get_json
 import json
 
-module = Blueprint('user', __name__, url_prefix='/user')
+module = Blueprint('user', __name__, url_prefix='/db/api/user')
 
 @module.route("/create/", methods=["POST"])
 def create():
@@ -15,6 +15,8 @@ def create():
         user = users.save_user(email=request_data["email"], username=request_data["username"],
                                about=request_data["about"], name=request_data["name"], optional=optional)
     except Exception as e:
+        if e.message == "5":
+            return json.dumps({"code": 5, "response": (e.message)})
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": user})
 
@@ -91,7 +93,7 @@ def list_posts():
     return json.dumps({"code": 0, "response": posts_l})
 
 
-@module.route("/update/", methods=["POST"])
+@module.route("/updateProfile/", methods=["POST"])
 def update():
     request_data = request.json
     required_data = ["user", "name", "about"]

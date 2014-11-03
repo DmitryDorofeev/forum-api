@@ -1,10 +1,10 @@
-from api.tools.entities import posts
+from api.tools.entities import posts, threads
 from flask import Blueprint, request
 import json
 from api.helpers import choose_required, intersection, related_exists, get_json
 
 
-module = Blueprint('post', __name__, url_prefix='/post')
+module = Blueprint('post', __name__, url_prefix='/db/api/post')
 
 
 @module.route("/create/", methods=["POST"])
@@ -31,13 +31,15 @@ def details():
     try:
         choose_required(data=content, required=required_data)
         post = posts.details(content["post"], related=related)
+        # if (post['isDeleted']):
+        #     return json.dumps({"code": 1, "response": "post not found"})
     except Exception as e:
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": post})
 
-
-def post_list(request):
-    content = request.GET.dict()
+@module.route("/list/", methods=["GET"])
+def post_list():
+    content = get_json(request)
     try:
         identifier = content["forum"]
         entity = "forum"
@@ -55,31 +57,34 @@ def post_list(request):
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": p_list})
 
-
-def remove(request):
-    content = json.loads(request.body)
+@module.route("/remove/", methods=["POST"])
+def remove():
+    content = get_json(request)
     required_data = ["post"]
     try:
         choose_required(data=content, required=required_data)
         post = posts.remove_restore(post_id=content["post"], status=1)
+        threads.dec_posts_count(content["post"])
     except Exception as e:
-        return json.dumps({"code": 1, "response": (e.message)})
+        # return json.dumps({"code": 1, "response": (e.message)})
+        print(e.message)
     return json.dumps({"code": 0, "response": post})
 
-
-def restore(request):
-    content = json.loads(request.body)
+@module.route("/restore/", methods=["POST"])
+def restore():
+    content = request.json
     required_data = ["post"]
     try:
         choose_required(data=content, required=required_data)
+        threads.inc_posts_count(content["post"])
         post = posts.remove_restore(post_id=content["post"], status=0)
     except Exception as e:
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": post})
 
-
-def update(request):
-    content = json.loads(request.body)
+@module.route("/update/", methods=["POST"])
+def update():
+    content = request.json
     required_data = ["post", "message"]
     try:
         choose_required(data=content, required=required_data)
@@ -88,9 +93,9 @@ def update(request):
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": post})
 
-
-def vote(request):
-    content = json.loads(request.body)
+@module.route("/vote/", methods=["POST"])
+def vote():
+    content = request.json
     required_data = ["post", "vote"]
     try:
         choose_required(data=content, required=required_data)

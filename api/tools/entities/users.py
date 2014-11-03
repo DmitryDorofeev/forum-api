@@ -14,6 +14,8 @@ def save_user(email, username, about, name, optional):
             DBconnect.update_query(
                 'INSERT INTO user (email, about, name, username, isAnonymous) VALUES (%s, %s, %s, %s, %s)',
                 (email, about, name, username, isAnonymous, ))
+        else:
+            raise Exception("5")
         user = DBconnect.select_query('select email, about, isAnonymous, id, name, username FROM user WHERE email = %s',
                            (email, ))
     except Exception as e:
@@ -23,7 +25,7 @@ def save_user(email, username, about, name, optional):
 
 
 def update_user(email, about, name):
-    DBconnect.exist(entity="Users", identifier="email", value=email)
+    DBconnect.exist(entity="user", identifier="email", value=email)
     DBconnect.update_query('UPDATE user SET email = %s, about = %s, name = %s WHERE email = %s',
                            (email, about, name, email, ))
     return details(email)

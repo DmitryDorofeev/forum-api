@@ -3,7 +3,7 @@ from flask import Blueprint, request
 from api.helpers import related_exists, choose_required, intersection, get_json
 import json
 
-module = Blueprint('forum', __name__, url_prefix='/forum')
+module = Blueprint('forum', __name__, url_prefix='/db/api/forum')
 
 
 @module.route("/create/", methods=["POST"])

@@ -3,7 +3,7 @@ from flask import Blueprint, request
 from api.helpers import related_exists, choose_required, intersection, get_json
 import json
 
-module = Blueprint('thread', __name__, url_prefix='/thread')
+module = Blueprint('thread', __name__, url_prefix='/db/api/thread')
 
 
 @module.route("/create/", methods=["POST"])
@@ -28,6 +28,8 @@ def details():
     content = get_json(request)
     required_data = ["thread"]
     related = related_exists(content)
+    if 'thread' in related:
+        return json.dumps({"code": 3, "response": "error"})
     try:
         choose_required(data=content, required=required_data)
         thread = threads.details(id=content["thread"], related=related)
@@ -35,9 +37,9 @@ def details():
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": thread})
 
-
-def vote(request):
-    content = json.loads(request.body)
+@module.route("/vote/", methods=["POST"])
+def vote():
+    content = request.json
     required_data = ["thread", "vote"]
     try:
         choose_required(data=content, required=required_data)
@@ -46,9 +48,9 @@ def vote(request):
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": thread})
 
-
-def subscribe(request):
-    content = json.loads(request.body)
+@module.route("/subscribe/", methods=["POST"])
+def subscribe():
+    content = request.json
     required_data = ["thread", "user"]
     try:
         choose_required(data=content, required=required_data)
@@ -57,9 +59,9 @@ def subscribe(request):
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": subscription})
 
-
-def unsubscribe(request):
-    content = json.loads(request.body)
+@module.route("/unsubscribe/", methods=["POST"])
+def unsubscribe():
+    content = request.json
     required_data = ["thread", "user"]
     try:
         choose_required(data=content, required=required_data)
@@ -69,9 +71,9 @@ def unsubscribe(request):
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": subscription})
 
-
-def open(request):
-    content = json.loads(request.body)
+@module.route("/open/", methods=["POST"])
+def open():
+    content = request.json
     required_data = ["thread"]
     try:
         choose_required(data=content, required=required_data)
@@ -80,9 +82,9 @@ def open(request):
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": thread})
 
-
-def close(request):
-    content = json.loads(request.body)
+@module.route("/close/", methods=["POST"])
+def close():
+    content = request.json
     required_data = ["thread"]
     try:
         choose_required(data=content, required=required_data)
@@ -91,9 +93,9 @@ def close(request):
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": thread})
 
-
-def update(request):
-    content = json.loads(request.body)
+@module.route("/update/", methods=["POST"])
+def update():
+    content = request.json
     required_data = ["thread", "slug", "message"]
     try:
         choose_required(data=content, required=required_data)
@@ -103,9 +105,9 @@ def update(request):
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": thread})
 
-
-def remove(request):
-    content = json.loads(request.body)
+@module.route("/remove/", methods=["POST"])
+def remove():
+    content = request.json
     required_data = ["thread"]
     try:
         choose_required(data=content, required=required_data)
@@ -114,9 +116,9 @@ def remove(request):
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": thread})
 
-
-def restore(request):
-    content = json.loads(request.body)
+@module.route("/restore/", methods=["POST"])
+def restore():
+    content = request.json
     required_data = ["thread"]
     try:
         choose_required(data=content, required=required_data)
@@ -125,9 +127,9 @@ def restore(request):
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": thread})
 
-
-def thread_list(request):
-    content = request.GET.dict()
+@module.route("/list/", methods=["GET"])
+def thread_list():
+    content = get_json(request)
     try:
         identifier = content["forum"]
         entity = "forum"
@@ -139,14 +141,14 @@ def thread_list(request):
             return json.dumps({"code": 1, "response": "Any methods?"})
     optional = intersection(request=content, values=["limit", "order", "since"])
     try:
-        t_list = threads.threads_list(entity=entity, identifier=identifier, related=[], params=optional)
+        t_list = threads.thread_list(entity=entity, identifier=identifier, related=[], params=optional)
     except Exception as e:
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": t_list})
 
-
-def list_posts(request):
-    content = request.GET.dict()
+@module.route("/listPosts/", methods=["GET"])
+def list_posts():
+    content = get_json(request)
     required_data = ["thread"]
     entity = "thread"
     optional = intersection(request=content, values=["limit", "order", "since"])

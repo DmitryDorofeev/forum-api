@@ -2,10 +2,6 @@ from api.tools.entities import users, forums, threads
 from api.tools import DBconnect
 from api.tools.DBconnect import DBConnection
 
-"""
-Helper class to manipulate with posts.
-"""
-
 
 def create(date, thread, message, user, forum, optional):
     DBconnect.exist(entity="thread", identifier="id", value=thread)
@@ -31,7 +27,6 @@ def create(date, thread, message, user, forum, optional):
     query += ") VALUES " + values + ")"
 
     update_thread_posts = "UPDATE thread SET posts = posts + 1 WHERE id = %s"
-
     con = DBConnection()
     con = con.connect()
     con.autocommit(False)
@@ -88,7 +83,7 @@ def posts_list(entity, params, identifier, related=[]):
     if "order" in params:
         query += " ORDER BY date " + params["order"]
     else:
-        query += " ORDER BY date DESC "
+        query += " ORDER BY date DESC"
     if "limit" in params:
         query += " LIMIT " + str(params["limit"])
     post_ids = DBconnect.select_query(query=query, params=parameters)
@@ -108,13 +103,13 @@ def remove_restore(post_id, status):
 
 
 def update(update_id, message):
-    DBconnect.exist(entity="Posts", identifier="id", value=update_id)
+    DBconnect.exist(entity="post", identifier="id", value=update_id)
     DBconnect.update_query('UPDATE post SET message = %s WHERE id = %s', (message, update_id, ))
     return details(details_id=update_id, related=[])
 
 
 def vote(vote_id, vote_type):
-    DBconnect.exist(entity="Posts", identifier="id", value=vote_id)
+    DBconnect.exist(entity="post", identifier="id", value=vote_id)
     if vote_type == -1:
         DBconnect.update_query("UPDATE post SET dislikes=dislikes+1, points=points-1 where id = %s", (vote_id, ))
     else:
