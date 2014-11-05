@@ -43,8 +43,10 @@ def vote():
     required_data = ["thread", "vote"]
     try:
         choose_required(data=content, required=required_data)
+        print("VOTE START")
         thread = threads.vote(id=content["thread"], vote=content["vote"])
     except Exception as e:
+        print("VOTE bad")
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": thread})
 

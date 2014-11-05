@@ -64,6 +64,7 @@ def list_followers():
         follower_l = followers.followers_list(email=request_data["user"], type="follower", params=followers_param)
     except Exception as e:
         return json.dumps({"code": 1, "response": (e.message)})
+    print(json.dumps({"code": 0, "response": follower_l}))
     return json.dumps({"code": 0, "response": follower_l})
 
 

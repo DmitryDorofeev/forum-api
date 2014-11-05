@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `forumdb`.`thread` (
   `slug` VARCHAR(65) NOT NULL,
   `likes` INT UNSIGNED NOT NULL DEFAULT 0,
   `dislikes` INT UNSIGNED NOT NULL DEFAULT 0,
-  `points` INT UNSIGNED NOT NULL DEFAULT 0,
+  `points` INT NOT NULL DEFAULT 0,
   `posts` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `fk_topics_forums_idx` (`forum` ASC),

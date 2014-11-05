@@ -87,12 +87,17 @@ def details(id, related):
 
 
 def vote(id, vote):
-    DBconnect.exist(entity="thread", identifier="id", value=id)
+    print("entered")
+    try:
+        DBconnect.exist(entity="thread", identifier="id", value=id)
+        print("#########\n###########VOTE " + str(vote) + "#########\n#########")
 
-    if vote == -1:
-        DBconnect.update_query("UPDATE thread SET dislikes=dislikes+1, points=points-1 where id = %s", (id, ))
-    else:
-        DBconnect.update_query("UPDATE thread SET likes=likes+1, points=points+1  where id = %s", (id, ))
+        if vote == -1:
+            DBconnect.update_query("UPDATE thread SET dislikes=dislikes+1, points=points-1 where id = %s", (id, ))
+        else:
+            DBconnect.update_query("UPDATE thread SET likes=likes+1, points=points+1  where id = %s", (id, ))
+    except Exception as e:
+        print(e.message)
 
     return details(id=id, related=[])
 
@@ -146,7 +151,7 @@ def thread_list(entity, identifier, related, params):
 def remove_restore(thread_id, status):
     DBconnect.exist(entity="thread", identifier="id", value=thread_id)
     DBconnect.update_query("UPDATE thread SET isDeleted = %s WHERE id = %s", (status, thread_id, ))
-
+    DBconnect.update_query("UPDATE post SET isDeleted = %s WHERE thread = %s", (status, thread_id, ))
     response = {
         "thread": thread_id
     }
