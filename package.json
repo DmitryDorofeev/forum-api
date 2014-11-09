@@ -4,7 +4,8 @@
   "description": "tp db proj",
   "main": "app.py",
   "scripts": {
-    "test": "python ../forum-api-test/tests/func_test.py -lv"
+    "test": "python ../forum-api-test/tests/func_test.py -lv",
+    "perf": "python ../forum-api-test/tests/perf_test.py -l --address=127.0.0.1:5000"
   },
   "repository": {
     "type": "git",
