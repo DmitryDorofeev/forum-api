@@ -7,23 +7,26 @@ def create(date, thread, message, user, forum, optional):
     DBconnect.exist(entity="thread", identifier="id", value=thread)
     DBconnect.exist(entity="forum", identifier="short_name", value=forum)
     DBconnect.exist(entity="user", identifier="email", value=user)
+    print (date, thread, message, user, forum, optional)
     if len(DBconnect.select_query("SELECT thread.id as id FROM thread JOIN forum ON thread.forum = forum.short_name "
                                 "WHERE thread.forum = %s AND thread.id = %s", (forum, thread, ))) == 0:
         raise Exception("no thread with id = " + str(thread) + " in forum " + forum)
-    if "parent" in optional:
+    if (("parent" in optional) and (optional["parent"] != None)):
         if len(DBconnect.select_query("SELECT post.id FROM post JOIN thread ON thread.id = post.thread "
                                     "WHERE post.id = %s AND thread.id = %s", (optional["parent"], thread, ))) == 0:
             raise Exception("No post with id = " + optional["parent"])
-    query = "INSERT INTO post (message, user, forum, thread, date"
-    values = "(%s, %s, %s, %s, %s"
-    parameters = [message, user, forum, thread, date]
+    try:
+        query = "INSERT INTO post (message, user, forum, thread, date"
+        values = "(%s, %s, %s, %s, %s"
+        parameters = [message, user, forum, thread, date]
 
-    #optional_data = ["parent", "isApproved", "isHighlighted", "isEdited", "isSpam", "isDeleted"]
-    for param in optional:
-        query += ", " + param
-        values += ", %s"
-        parameters.append(optional[param])
-
+        #optional_data = ["parent", "isApproved", "isHighlighted", "isEdited", "isSpam", "isDeleted"]
+        for param in optional:
+            query += ", " + param
+            values += ", %s"
+            parameters.append(optional[param])
+    except Exception as e:
+        print e.message
     query += ") VALUES " + values + ")"
 
     update_thread_posts = "UPDATE thread SET posts = posts + 1 WHERE id = %s"

@@ -19,7 +19,9 @@ def create():
                             message=content["message"], user=content["user"],
                             forum=content["forum"], optional=optional)
     except Exception as e:
+        print e.message
         return json.dumps({"code": 1, "response": (e.message)})
+    print "ok"
     return json.dumps({"code": 0, "response": post})
 
 
