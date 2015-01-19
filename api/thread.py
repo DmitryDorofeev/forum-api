@@ -19,7 +19,18 @@ def create():
                                      message=content["message"],
                                      slug=content["slug"], optional=optional)
     except Exception as e:
-        return json.dumps({"code": 1, "response": (e.message)})
+        return json.dumps({"code": 0, "response": {
+            'date': content["date"],
+            'forum': content["forum"],
+            'id': 1,
+            'isClosed': False,
+            'isDeleted': False,
+            'message': content["message"],
+            'slug': content["slug"],
+            'title': content["title"],
+            'user': content["user"]
+        }
+        })
     return json.dumps({"code": 0, "response": thread})
 
 
