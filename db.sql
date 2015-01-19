@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS `forumdb`.`user` (
   `about` TEXT NULL,
   `name` VARCHAR(255) NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `email_UNIQUE` (`email` ASC))
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC),
+  UNIQUE INDEX name_email (name, email))
 ENGINE = InnoDB;
 
 
@@ -140,6 +141,7 @@ CREATE TABLE IF NOT EXISTS `forumdb`.`subscription` (
   `user` VARCHAR(45) NOT NULL,
   `thread` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE INDEX `fk_users_has_threads` (`user` ASC, `thread` ASC),
   INDEX `fk_users_has_threads_threads1_idx` (`thread` ASC),
   INDEX `fk_users_has_threads_users1_idx` (`user` ASC),
   CONSTRAINT `fk_users_has_threads_users1`

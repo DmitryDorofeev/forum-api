@@ -75,7 +75,6 @@ def posts_list(entity, params, identifier, related=[]):
         DBconnect.exist(entity="forum", identifier="short_name", value=identifier)
     if entity == "thread":
         DBconnect.exist(entity="thread", identifier="id", value=identifier)
-
     if entity == "user":
         DBconnect.exist(entity="user", identifier="email", value=identifier)
     query = "SELECT id FROM post WHERE " + entity + " = %s "
@@ -118,7 +117,6 @@ def vote(vote_id, vote_type):
     else:
         DBconnect.update_query("UPDATE post SET likes=likes+1, points=points+1  where id = %s", (vote_id, ))
     return details(details_id=vote_id, related=[])
-
 
 
 def post_query(id):

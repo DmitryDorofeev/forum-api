@@ -52,6 +52,7 @@ def details():
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": post})
 
+
 @module.route("/list/", methods=["GET"])
 def post_list():
     content = get_json(request)
@@ -72,6 +73,7 @@ def post_list():
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": p_list})
 
+
 @module.route("/remove/", methods=["POST"])
 def remove():
     content = get_json(request)
@@ -81,9 +83,10 @@ def remove():
         post = posts.remove_restore(post_id=content["post"], status=1)
         threads.dec_posts_count(content["post"])
     except Exception as e:
-        # return json.dumps({"code": 1, "response": (e.message)})
+        return json.dumps({"code": 1, "response": (e.message)})
         print(e.message)
     return json.dumps({"code": 0, "response": post})
+
 
 @module.route("/restore/", methods=["POST"])
 def restore():
@@ -97,6 +100,7 @@ def restore():
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": post})
 
+
 @module.route("/update/", methods=["POST"])
 def update():
     content = request.json
@@ -107,6 +111,7 @@ def update():
     except Exception as e:
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": post})
+
 
 @module.route("/vote/", methods=["POST"])
 def vote():

@@ -5,6 +5,7 @@ import json
 
 module = Blueprint('user', __name__, url_prefix='/db/api/user')
 
+
 @module.route("/create/", methods=["POST"])
 def create():
     request_data = request.json
@@ -32,6 +33,7 @@ def details():
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": user_details})
 
+
 @module.route("/follow/", methods=["POST"])
 def follow():
     request_data = request.json
@@ -43,6 +45,7 @@ def follow():
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": following})
 
+
 @module.route("/unfollow/", methods=["POST"])
 def unfollow():
     request_data = request.json
@@ -53,6 +56,7 @@ def unfollow():
     except Exception as e:
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": following})
+
 
 @module.route("/listFollowers/", methods=["GET"])
 def list_followers():

@@ -48,6 +48,7 @@ def details():
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": thread})
 
+
 @module.route("/vote/", methods=["POST"])
 def vote():
     content = request.json
@@ -61,6 +62,7 @@ def vote():
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": thread})
 
+
 @module.route("/subscribe/", methods=["POST"])
 def subscribe():
     content = request.json
@@ -71,6 +73,7 @@ def subscribe():
     except Exception as e:
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": subscription})
+
 
 @module.route("/unsubscribe/", methods=["POST"])
 def unsubscribe():
@@ -84,6 +87,7 @@ def unsubscribe():
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": subscription})
 
+
 @module.route("/open/", methods=["POST"])
 def open():
     content = request.json
@@ -95,6 +99,7 @@ def open():
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": thread})
 
+
 @module.route("/close/", methods=["POST"])
 def close():
     content = request.json
@@ -105,6 +110,7 @@ def close():
     except Exception as e:
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": thread})
+
 
 @module.route("/update/", methods=["POST"])
 def update():
@@ -118,6 +124,7 @@ def update():
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": thread})
 
+
 @module.route("/remove/", methods=["POST"])
 def remove():
     content = request.json
@@ -129,6 +136,7 @@ def remove():
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": thread})
 
+
 @module.route("/restore/", methods=["POST"])
 def restore():
     content = request.json
@@ -139,6 +147,7 @@ def restore():
     except Exception as e:
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": thread})
+
 
 @module.route("/list/", methods=["GET"])
 def thread_list():
@@ -158,6 +167,7 @@ def thread_list():
     except Exception as e:
         return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": t_list})
+
 
 @module.route("/listPosts/", methods=["GET"])
 def list_posts():
