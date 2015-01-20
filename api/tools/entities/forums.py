@@ -44,7 +44,6 @@ def details(short_name, related):
 
 def list_users(short_name, optional):
     DBconnect.exist(entity="forum", identifier="short_name", value=short_name)
-
     query = "SELECT user.id, user.email, user.name, user.username, user.isAnonymous, user.about FROM user USE KEY (name_email) " \
         "IN (SELECT DISTINCT user FROM post USE KEY (forum_user) WHERE forum = %s)  "
 
