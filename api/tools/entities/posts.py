@@ -71,13 +71,13 @@ def details(details_id, related):
 
 
 def posts_list(entity, params, identifier, related=[]):
-    if entity == "forum":
-        DBconnect.exist(entity="forum", identifier="short_name", value=identifier)
-    if entity == "thread":
-        DBconnect.exist(entity="thread", identifier="id", value=identifier)
-    if entity == "user":
-        DBconnect.exist(entity="user", identifier="email", value=identifier)
-    query = "SELECT id FROM post WHERE " + entity + " = %s "
+    # if entity == "forum":
+    #     DBconnect.exist(entity="forum", identifier="short_name", value=identifier)
+    # if entity == "thread":
+    #     DBconnect.exist(entity="thread", identifier="id", value=identifier)
+    # if entity == "user":
+    #     DBconnect.exist(entity="user", identifier="email", value=identifier)
+    query = "SELECT post.date, post.dislikes, post.forum, post.id, post.isApproved, post.isDeleted, post.isEdited, post.isHighlighted, post.isSpam, post.likes, post.message, post.parent, post.points, post.thread, post.user FROM post WHERE " + entity + " = %s "
     parameters = [identifier]
     if "since" in params:
         query += " AND date >= %s"
@@ -90,9 +90,14 @@ def posts_list(entity, params, identifier, related=[]):
         query += " LIMIT " + str(params["limit"])
     post_ids = DBconnect.select_query(query=query, params=parameters)
     post_list = []
-    for id in post_ids:
-        id = id[0]
-        post_list.append(details(details_id=id, related=related))
+    for post in post_ids:
+        if "user" in related:
+            post["user"] = users.details(post["user"])
+        if "forum" in related:
+            post["forum"] = forums.details(short_name=post["forum"], related=[])
+        if "thread" in related:
+            post["thread"] = threads.details(id=post["thread"], related=[])
+        post_list.append(post)
     return post_list
 
 
