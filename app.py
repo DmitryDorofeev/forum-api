@@ -1,7 +1,7 @@
 __author__ = 'dmitry'
 
-from flask import Flask
-from api.tools.entities.clear import clear as clearDB
+from flask import Flask, request
+from api.tools.entities.clear import clear as clear_db
 import json
 app = Flask(__name__)
 
@@ -17,9 +17,15 @@ app.register_blueprint(forum)
 app.register_blueprint(thread)
 app.register_blueprint(post)
 
+
+@app.before_request
+def before_request():
+    print request.endpoint
+
+
 @app.route('/db/api/clear/', methods=['POST'])
 def clear():
-    clearDB()
+    clear_db()
     return json.dumps({"code": 0, "response": "OK"})
 
 if __name__ == '__main__':

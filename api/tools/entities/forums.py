@@ -45,9 +45,6 @@ def details(short_name, related):
 def list_users(short_name, optional):
     DBconnect.exist(entity="forum", identifier="short_name", value=short_name)
 
-    #query = "SELECT distinct email FROM user JOIN post ON post.user = user.email " \
-     #       " JOIN forum on forum.short_name = post.forum WHERE post.forum = %s "
-
     query = "SELECT user.id, user.email, user.name, user.username, user.isAnonymous, user.about FROM user " \
         "WHERE user.email IN (SELECT DISTINCT user FROM post WHERE post.forum = %s) "
 
@@ -62,12 +59,6 @@ def list_users(short_name, optional):
 
     users_tuple = DBconnect.select_query(query, (short_name, ))
     list_u = []
-    # for user in users_tuple:
-    #     user = user[0]
-    #     user["subscriptions"] = users.user_subscriptions(email)
-    #     user["followers"] = users.followers(email, "follower")
-    #     user["following"] = users.followers(email, "followee")
-    #     list_u.append(users.details(user))
 
     for user_sql in users_tuple:
         email = user_sql[1]
