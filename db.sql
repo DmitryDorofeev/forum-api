@@ -102,7 +102,8 @@ CREATE TABLE IF NOT EXISTS `forumdb`.`subscription` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `user` VARCHAR(45) NOT NULL,
   `thread` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`user`, `thread`))
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `user_thread` (`user`, `thread`))
 ENGINE = InnoDB;
 
 
