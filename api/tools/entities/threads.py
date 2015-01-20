@@ -121,11 +121,11 @@ def update_thread(id, slug, message):
 
 
 def thread_list(entity, identifier, related, params):
-    if entity == "forum":
-        DBconnect.exist(entity="forum", identifier="short_name", value=identifier)
-    if entity == "user":
-        DBconnect.exist(entity="user", identifier="email", value=identifier)
-    query = "SELECT id FROM thread WHERE " + entity + " = %s "
+    # if entity == "forum":
+    #     DBconnect.exist(entity="forum", identifier="short_name", value=identifier)
+    # if entity == "user":
+    #     DBconnect.exist(entity="user", identifier="email", value=identifier)
+    query = "SELECT date, forum, id, isClosed, isDeleted, message, slug, title, user, dislikes, likes, points, posts FROM thread WHERE " + entity + " = %s "
     parameters = [identifier]
 
     if "since" in params:
@@ -140,10 +140,27 @@ def thread_list(entity, identifier, related, params):
 
     thread_ids_tuple = DBconnect.select_query(query=query, params=parameters)
     thread_list = []
-
-    for id in thread_ids_tuple:
-        id = id[0]
-        thread_list.append(details(id=id, related=related))
+    for thread in thread_ids_tuple:
+        thread = {
+            'date': str(thread[0]),
+            'forum': thread[1],
+            'id': thread[2],
+            'isClosed': bool(thread[3]),
+            'isDeleted': bool(thread[4]),
+            'message': thread[5],
+            'slug': thread[6],
+            'title': thread[7],
+            'user': thread[8],
+            'dislikes': thread[9],
+            'likes': thread[10],
+            'points': thread[11],
+            'posts': thread[12],
+        }
+        if "user" in related:
+            thread["user"] = users.details(thread["user"])
+        if "forum" in related:
+            thread["forum"] = forums.details(short_name=thread["forum"], related=[])
+        thread_list.append(thread)
 
     return thread_list
 
