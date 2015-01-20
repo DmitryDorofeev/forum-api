@@ -77,7 +77,7 @@ def posts_list(entity, params, identifier, related=[]):
     #     DBconnect.exist(entity="thread", identifier="id", value=identifier)
     # if entity == "user":
     #     DBconnect.exist(entity="user", identifier="email", value=identifier)
-    query = "SELECT post.date, post.dislikes, post.forum, post.id, post.isApproved, post.isDeleted, post.isEdited, post.isHighlighted, post.isSpam, post.likes, post.message, post.parent, post.points, post.thread, post.user FROM post WHERE " + entity + " = %s "
+    query = "SELECT date, dislikes, forum, id, isApproved, isDeleted, isEdited, isHighlighted, isSpam, likes, message, parent, points, thread, user FROM post WHERE " + entity + " = %s "
     parameters = [identifier]
     if "since" in params:
         query += " AND date >= %s"
@@ -91,13 +91,14 @@ def posts_list(entity, params, identifier, related=[]):
     post_ids = DBconnect.select_query(query=query, params=parameters)
     post_list = []
     for post in post_ids:
+        pf = post_formated(post)
         if "user" in related:
-            post["user"] = users.details(post["user"])
+            pf["user"] = users.details(pf["user"])
         if "forum" in related:
-            post["forum"] = forums.details(short_name=post["forum"], related=[])
+            pf["forum"] = forums.details(short_name=pf["forum"], related=[])
         if "thread" in related:
-            post["thread"] = threads.details(id=post["thread"], related=[])
-        post_list.append(post)
+            pf["thread"] = threads.details(id=pf["thread"], related=[])
+        post_list.append(pf)
     return post_list
 
 
