@@ -91,7 +91,24 @@ def posts_list(entity, params, identifier, related=[]):
     post_ids = DBconnect.select_query(query=query, params=parameters)
     post_list = []
     for post in post_ids:
-        pf = post_formated(post)
+        pf = {
+            'date': str(post[0]),
+            'dislikes': post[1],
+            'forum': post[2],
+            'id': post[3],
+            'isApproved': bool(post[4]),
+            'isDeleted': bool(post[5]),
+            'isEdited': bool(post[6]),
+            'isHighlighted': bool(post[7]),
+            'isSpam': bool(post[8]),
+            'likes': post[9],
+            'message': post[10],
+            'parent': post[11],
+            'points': post[12],
+            'thread': post[13],
+            'user': post[14],
+
+        }
         if "user" in related:
             pf["user"] = users.details(pf["user"])
         if "forum" in related:

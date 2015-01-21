@@ -67,10 +67,10 @@ def post_list():
             return json.dumps({"code": 1, "response": (e.message)})
 
     optional = intersection(request=content, values=["limit", "order", "since"])
-    # try:
-    p_list = posts.posts_list(entity=entity, params=optional, identifier=identifier, related=[])
-    # except Exception as e:
-    #     return json.dumps({"code": 1, "response": (e.message)})
+    try:
+        p_list = posts.posts_list(entity=entity, params=optional, identifier=identifier, related=[])
+    except Exception as e:
+        return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": p_list})
 
 
