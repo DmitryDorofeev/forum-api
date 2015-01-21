@@ -119,14 +119,8 @@ def update_thread(id, slug, message):
 
 
 def thread_list(entity, identifier, related, params):
-    ent = ""
-    if entity == "forum":
-        ent = "USE KEY (forum)"
-        # DBconnect.exist(entity="forum", identifier="short_name", value=identifier)
-    if entity == "user":
-        ent = "USE KEY (user)"
         # DBconnect.exist(entity="user", identifier="email", value=identifier)
-    query = "SELECT date, forum, id, isClosed, isDeleted, message, slug, title, user, dislikes, likes, points, posts FROM thread " + ent + " WHERE " + entity + " = %s "
+    query = "SELECT date, forum, id, isClosed, isDeleted, message, slug, title, user, dislikes, likes, points, posts FROM thread WHERE " + entity + " = %s "
     parameters = [identifier]
 
     if "since" in params:
