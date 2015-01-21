@@ -41,7 +41,7 @@ def remove_follow(email1, email2):
 
 
 def followers_list(email, type, params):
-    # DBconnect.exist(entity="user", identifier="email", value=email)
+    DBconnect.exist(entity="user", identifier="email", value=email)
     if type == "follower":
         where = "followee"
     if type == "followee":
@@ -62,15 +62,8 @@ def followers_list(email, type, params):
     followers_ids_tuple = DBconnect.select_query(query=query, params=(email, ))
 
     f_list = []
-    for user in followers_ids_tuple:
-        us = {
-            'about': user[1],
-            'email': user[0],
-            'id': user[3],
-            'isAnonymous': bool(user[2]),
-            'name': user[4],
-            'username': user[5]
-        }
-        f_list.append(us)
+    for id in followers_ids_tuple:
+        id = id[0]
+        f_list.append(users.details(email=id))
 
     return f_list

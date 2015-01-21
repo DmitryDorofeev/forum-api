@@ -88,8 +88,8 @@ def details(id, related):
 
 def details_in(in_str):
     query = "SELECT date, forum, id, isClosed, isDeleted, message, slug, title, user, dislikes, likes, points, posts FROM thread" \
-            " WHERE id IN (" + in_str + ");"
-    threads = DBconnect.select_query(query)
+            " WHERE id IN (%s);"
+    threads = DBconnect.select_query(query, (in_str, ))
     thread_list = {}
     for thread in threads:
         thread = {
@@ -107,7 +107,7 @@ def details_in(in_str):
             'points': thread[11],
             'posts': thread[12],
         }
-        thread_list[thread['email']] = thread
+        thread_list[int(thread['id'])] = thread
     return thread_list
 
 

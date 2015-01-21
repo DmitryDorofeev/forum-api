@@ -43,8 +43,8 @@ def details(short_name, related):
 
 
 def details_in(in_str):
-    query = "SELECT id, name, short_name, user FROM forum WHERE short_name IN (" + in_str + ");"
-    forums = DBconnect.select_query(query)
+    query = "SELECT id, name, short_name, user FROM forum WHERE short_name IN (%s);"
+    forums = DBconnect.select_query(query, (in_str, ))
     forum_list = {}
     for forum in forums:
         forum = {
@@ -53,7 +53,7 @@ def details_in(in_str):
             'short_name': forum[2],
             'user': forum[3]
         }
-        forum_list[forum['email']] = forum
+        forum_list[forum['short_name']] = forum
     return forum_list
 
 
