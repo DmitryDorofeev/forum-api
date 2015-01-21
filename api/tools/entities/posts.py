@@ -107,9 +107,9 @@ def posts_list(entity, params, identifier, related=[]):
     related_thread = ""
     for post in post_ids:
         if "user" in related:
-            related_user += post[14] + ", "
+            related_user += "'" + post[14] + "', "
         if "forum" in related:
-            related_forum += post[2] + ", "
+            related_forum += "'" + post[2] + "', "
         if "thread" in related:
             related_thread += str(post[13]) + ", "
 

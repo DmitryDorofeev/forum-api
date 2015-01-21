@@ -211,7 +211,6 @@ def inc_posts_count(post):
 
 def dec_posts_count(post):
     thread = DBconnect.select_query("SELECT thread FROM post WHERE id = %s", (post, ))
-    print("RUN")
     try:
         DBconnect.update_query("UPDATE thread SET posts = posts - 1 WHERE id = %s", (thread[0][0], ))
     except Exception as e:

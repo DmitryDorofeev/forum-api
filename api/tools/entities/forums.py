@@ -71,7 +71,6 @@ def list_users(short_name, optional):
         # query += " ORDER BY user.name DESC"
     if "limit" in optional:
         query += " LIMIT " + str(optional["limit"])
-    print(query % (short_name, ))
     users_tuple = DBconnect.select_query(query, (short_name, ))
     list_u = []
 

@@ -73,5 +73,4 @@ def list_users():
     users_l = forums.list_users(content["forum"], optional)
     # except Exception as e:
     #     return json.dumps({"code": 1, "response": (e.message)})
-    print(json.dumps({"code": 0, "response": users_l}))
     return json.dumps({"code": 0, "response": users_l})
