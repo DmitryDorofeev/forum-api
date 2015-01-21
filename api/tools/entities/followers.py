@@ -62,8 +62,15 @@ def followers_list(email, type, params):
     followers_ids_tuple = DBconnect.select_query(query=query, params=(email, ))
 
     f_list = []
-    for id in followers_ids_tuple:
-        id = id[0]
-        f_list.append(users.details(email=id))
+    for user in followers_ids_tuple:
+        us = {
+            'about': user[1],
+            'email': user[0],
+            'id': user[3],
+            'isAnonymous': bool(user[2]),
+            'name': user[4],
+            'username': user[5]
+        }
+        f_list.append(us)
 
     return f_list
