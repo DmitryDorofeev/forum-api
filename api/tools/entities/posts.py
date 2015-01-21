@@ -88,7 +88,13 @@ def posts_list(entity, params, identifier, related=[]):
         query += " ORDER BY date DESC"
     if "limit" in params:
         query += " LIMIT " + str(params["limit"])
+
+    print (query % parameters)
+    begin = int(round(time.time() * 1000))
     post_ids = DBconnect.select_query(query=query, params=parameters)
+    end = int(round(time.time() * 1000))
+    print(end-begin)
+    begin = int(round(time.time() * 1000))
     post_list = []
     for post in post_ids:
         pf = {
@@ -116,6 +122,8 @@ def posts_list(entity, params, identifier, related=[]):
         if "thread" in related:
             pf["thread"] = threads.details(id=pf["thread"], related=[])
         post_list.append(pf)
+    end = int(round(time.time() * 1000))
+    print(end-begin)
     return post_list
 
 
