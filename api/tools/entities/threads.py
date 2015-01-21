@@ -142,7 +142,8 @@ def thread_list(entity, identifier, related, params):
     begin = int(time.time())
     thread_ids_tuple = DBconnect.select_query(query=query, params=parameters)
     end = int(time.time())
-    print(end-begin)
+    print(end - begin)
+    begin = int(time.time())
     thread_list = []
     for thread in thread_ids_tuple:
         thread = {
@@ -165,7 +166,8 @@ def thread_list(entity, identifier, related, params):
         if "forum" in related:
             thread["forum"] = forums.details(short_name=thread["forum"], related=[])
         thread_list.append(thread)
-
+    end = int(time.time())
+    print(end - begin)
     return thread_list
 
 
