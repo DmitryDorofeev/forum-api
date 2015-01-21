@@ -30,7 +30,7 @@ def save_thread(forum, title, isClosed, user, date, message, slug, optional):
         )
     thread = thread[0]
     response = {
-        'date': str(thread[0]),
+        'date': u'%s' % thread[0],
         'forum': thread[1],
         'id': thread[2],
         'isClosed': bool(thread[3]),

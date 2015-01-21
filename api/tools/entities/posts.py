@@ -137,7 +137,7 @@ def post_query(id):
 def post_formated(post):
     post = post[0]
     post_response = {
-        'date': str(post[0]),
+        'date': u'%s' % post[0],
         'dislikes': post[1],
         'forum': post[2],
         'id': post[3],
