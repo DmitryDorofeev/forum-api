@@ -59,7 +59,7 @@ def details(email):
 
 
 def details_in(in_str):
-    query = "SELECT email, about, isAnonymous, id, name, username FROM user WHERE email IN (%s)"
+    query = "SELECT email, about, isAnonymous, id, name, username FROM user WHERE email IN (%s);"
     users = DBconnect.select_query(query, (in_str, ))
     user_list = {}
     for user in users:
