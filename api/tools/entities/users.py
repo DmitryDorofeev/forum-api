@@ -49,8 +49,14 @@ def details(email):
     user = user_format(user)
     if user is None:
         raise Exception("No user with email " + email)
-    # user["followers"] = followers(email, "follower")
-    # user["following"] = followers(email, "followee")
+    f_list = DBconnect.select_query(
+        "SELECT follower FROM follower WHERE followee = %s ", (email, )
+    )
+    user["followers"] = tuple2list(f_list)
+    f_list = DBconnect.select_query(
+        "SELECT followee FROM follower WHERE follower = %s ", (email, )
+    )
+    user["following"] = tuple2list(f_list)
     user["subscriptions"] = user_subscriptions(email)
     return user
 
