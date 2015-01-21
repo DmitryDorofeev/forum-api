@@ -45,12 +45,12 @@ def followers(email, type):
 
 
 def details(email):
-    user = DBconnect.select_query('select email, about, isAnonymous, id, name, username FROM user WHERE email = %s', (email, ))
+    user = DBconnect.select_query('select email, about, isAnonymous, id, name, username FROM user USE KEY (email) WHERE email = %s', (email, ))
     user = user_format(user)
     if user is None:
         raise Exception("No user with email " + email)
-    user["followers"] = followers(email, "follower")
-    user["following"] = followers(email, "followee")
+    # user["followers"] = followers(email, "follower")
+    # user["following"] = followers(email, "followee")
     user["subscriptions"] = user_subscriptions(email)
     return user
 

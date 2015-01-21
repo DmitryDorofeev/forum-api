@@ -89,9 +89,7 @@ def details(id, related):
 def vote(id, vote):
     print("entered")
     try:
-        DBconnect.exist(entity="thread", identifier="id", value=id)
-        print("#########\n###########VOTE " + str(vote) + "#########\n#########")
-
+        # DBconnect.exist(entity="thread", identifier="id", value=id)
         if vote == -1:
             DBconnect.update_query("UPDATE thread SET dislikes=dislikes+1, points=points-1 where id = %s", (id, ))
         else:

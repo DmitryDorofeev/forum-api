@@ -71,12 +71,12 @@ def details(details_id, related):
 
 
 def posts_list(entity, params, identifier, related=[]):
-    if entity == "forum":
-        DBconnect.exist(entity="forum", identifier="short_name", value=identifier)
-    if entity == "thread":
-        DBconnect.exist(entity="thread", identifier="id", value=identifier)
-    if entity == "user":
-        DBconnect.exist(entity="user", identifier="email", value=identifier)
+    # if entity == "forum":
+    #     DBconnect.exist(entity="forum", identifier="short_name", value=identifier)
+    # if entity == "thread":
+    #     DBconnect.exist(entity="thread", identifier="id", value=identifier)
+    # if entity == "user":
+    #     DBconnect.exist(entity="user", identifier="email", value=identifier)
     query = "SELECT date, dislikes, forum, id, isApproved, isDeleted, isEdited, isHighlighted, isSpam, likes, message, parent, points, thread, user FROM post WHERE " + entity + " = %s "
     parameters = [identifier]
     if "since" in params:
