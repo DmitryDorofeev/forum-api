@@ -128,13 +128,13 @@ def remove_restore(post_id, status):
 
 
 def update(update_id, message):
-    DBconnect.exist(entity="post", identifier="id", value=update_id)
+    # DBconnect.exist(entity="post", identifier="id", value=update_id)
     DBconnect.update_query('UPDATE post SET message = %s WHERE id = %s', (message, update_id, ))
     return details(details_id=update_id, related=[])
 
 
 def vote(vote_id, vote_type):
-    DBconnect.exist(entity="post", identifier="id", value=vote_id)
+    # DBconnect.exist(entity="post", identifier="id", value=vote_id)
     if vote_type == -1:
         DBconnect.update_query("UPDATE post SET dislikes=dislikes+1, points=points-1 where id = %s", (vote_id, ))
     else:
