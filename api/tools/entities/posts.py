@@ -102,28 +102,29 @@ def posts_list(entity, params, identifier, related=[]):
     begin = int(round(time.time() * 1000))
     user_time = forum_time = thread_time = 0
     post_list = []
-    # related_user = ""
-    # related_forum = ""
-    # related_thread = ""
-    # for post in post_ids:
-    #     if "user" in related:
-    #         related_user += "'" + post[14] + "', "
-    #         print("USERS: "+related_user)
-    #     if "forum" in related:
-    #         related_forum += "'" + post[2] + "', "
-    #     if "thread" in related:
-    #         related_thread += str(post[13]) + ", "
-    #
-    # if "user" in related:
-    #     users_list = users.details_in(related_user[:len(related_user) - 2])
-    #     print('####### USER LIST ########')
-    #     print(users_list)
-    #     print('####### END OF USER LIST ########')
-    # if "forum" in related:
-    #     forum_list = forums.details_in(related_forum[:len(related_forum) - 2])
-    # if "thread" in related:
-    #     thread_list = threads.details_in(related_thread[:len(related_thread) - 2])
+    ###################
+    related_user = ""
+    related_forum = ""
+    related_thread = ""
+    for post in post_ids:
+        if "user" in related:
+            related_user += "'" + post[14] + "', "
+            print("USERS: "+related_user)
+        if "forum" in related:
+            related_forum += "'" + post[2] + "', "
+        if "thread" in related:
+            related_thread += str(post[13]) + ", "
 
+    if "user" in related:
+        users_list = users.details_in(related_user[:len(related_user) - 2])
+        print('####### USER LIST ########')
+        print(users_list)
+        print('####### END OF USER LIST ########')
+    if "forum" in related:
+        forum_list = forums.details_in(related_forum[:len(related_forum) - 2])
+    if "thread" in related:
+        thread_list = threads.details_in(related_thread[:len(related_thread) - 2])
+    ################
     for post in post_ids:
         pf = {
             'date': str(post[0]),
@@ -145,21 +146,29 @@ def posts_list(entity, params, identifier, related=[]):
         }
         if "user" in related:
             ubeg = int(round(time.time() * 1000))
-            pf["user"] = users.details(pf["user"])
-
-            # pf["user"] = users_list.get(pf["user"])
+            # pf["user"] = users.details(pf["user"])
+            try:
+                pf["user"] = users_list[pf["user"]]
+            except Exception as e:
+                pf["user"] = users.details(pf["user"])
             user_time += (int(round(time.time() * 1000)) - ubeg)
         if "forum" in related:
             fbeg = int(round(time.time() * 1000))
-            pf["forum"] = forums.details(short_name=pf["forum"], related=[])
-            # print("FORUM " + pf["forum"])
-            # print(forum_list)
-            # pf["forum"] = forum_list.get(pf["forum"])
+            # pf["forum"] = forums.details(short_name=pf["forum"], related=[])
+            print("FORUM " + pf["forum"])
+            print(forum_list)
+            try:
+                pf["forum"] = forum_list[pf["forum"]]
+            except Exception as e:
+                pf["forum"] = forums.details(short_name=pf["forum"], related=[])
             forum_time += (int(round(time.time() * 1000)) - fbeg)
         if "thread" in related:
             tbeg = int(round(time.time() * 1000))
-            pf["thread"] = threads.details(id=pf["thread"], related=[])
-            # pf["thread"] = thread_list.get(int(pf["thread"]))
+            # pf["thread"] = threads.details(id=pf["thread"], related=[])
+            try:
+                pf["thread"] = thread_list[int(pf["thread"])]
+            except Exception as e:
+                pf["thread"] = threads.details(id=pf["thread"], related=[])
             thread_time += (int(round(time.time() * 1000)) - tbeg)
         post_list.append(pf)
     end = int(round(time.time() * 1000))
