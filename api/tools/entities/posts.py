@@ -1,7 +1,7 @@
 from api.tools.entities import users, forums, threads
 from api.tools import DBconnect
 from api.tools.DBconnect import DBConnection
-
+import time
 
 def create(date, thread, message, user, forum, optional):
     DBconnect.exist(entity="thread", identifier="id", value=thread)
