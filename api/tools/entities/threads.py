@@ -138,8 +138,11 @@ def thread_list(entity, identifier, related, params):
         query += " ORDER BY date DESC "
     if "limit" in params:
         query += " LIMIT " + str(params["limit"])
-
+    print(query % parameters)
+    begin = int(time.time())
     thread_ids_tuple = DBconnect.select_query(query=query, params=parameters)
+    end = int(time.time())
+    print(end-begin)
     thread_list = []
     for thread in thread_ids_tuple:
         thread = {
