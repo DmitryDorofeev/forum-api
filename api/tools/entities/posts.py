@@ -77,7 +77,32 @@ def posts_list(entity, params, identifier, related=[]):
     #     DBconnect.exist(entity="thread", identifier="id", value=identifier)
     # if entity == "user":
     #     DBconnect.exist(entity="user", identifier="email", value=identifier)
-    query = "SELECT date, dislikes, forum, id, isApproved, isDeleted, isEdited, isHighlighted, isSpam, likes, message, parent, points, thread, user FROM post WHERE " + entity + " = %s "
+    # query = "SELECT date, dislikes, forum, id, isApproved, isDeleted, isEdited, isHighlighted, isSpam, likes, message, parent, points, thread, user FROM post WHERE " + entity + " = %s "
+
+    query = "SELECT post.date, post.dislikes, post.forum, post.id, post.isApproved, post.isDeleted," \
+            " post.isEdited, post.isHighlighted, post.isSpam, post.likes, post.message, post.parent," \
+            " post.points, post.thread, post.user"
+
+    if "user" in related:
+        query += ", user.about, user.email, user.id, user.isAnonymous, user.name, user.username "
+    if "forum" in related:
+        query += ", forum.id, forum.name, forum.short_name, forum.user"
+    if "thread" in related:
+        query += ", thread.date, thread.forum, thread.id, thread.isClosed, thread.isDeleted, thread.message," \
+                 " thread.slug, thread.title, thread.user, thread.dislikes, thread.likes, thread.points, thread.posts"
+    query += " FROM post "
+    fid = tid = 15
+    if "user" in related:
+        query += "JOIN user ON user.email = post.user "
+        fid = 21
+        tid = 21
+    if "forum" in related:
+        tid = 25
+        query += "JOIN user ON forum.short_name = post.forum "
+    if "thread" in related:
+        query += "JOIN thread ON thread.id = post.thread "
+    query += "WHERE post." + entity + " = %s "
+
     parameters = [identifier]
     if "since" in params:
         query += " AND date >= %s"
@@ -97,6 +122,7 @@ def posts_list(entity, params, identifier, related=[]):
     begin = int(round(time.time() * 1000))
     post_list = []
     for post in post_ids:
+
         pf = {
             'date': str(post[0]),
             'dislikes': post[1],
@@ -116,12 +142,45 @@ def posts_list(entity, params, identifier, related=[]):
 
         }
         if "user" in related:
-            pf["user"] = users.details(pf["user"])
+            pf["user"] = {
+                'about': post[15],
+                'email': post[16],
+                'id': post[17],
+                'isAnonymous': post[18],
+                'name': post[19],
+                'username': post[20]
+            }
         if "forum" in related:
-            pf["forum"] = forums.details(short_name=pf["forum"], related=[])
+            pf["forum"] = {
+                'id': post[fid+0],
+                'name': post[fid+1],
+                'short_name': post[fid+2],
+                'user': post[fid+3]
+            }
         if "thread" in related:
-            pf["thread"] = threads.details(id=pf["thread"], related=[])
+            pf["thread"] = {
+                'date': str(post[tid+0]),
+                'forum': post[tid+1],
+                'id': post[tid+2],
+                'isClosed': bool(post[tid+3]),
+                'isDeleted': bool(post[tid+4]),
+                'message': post[tid+5],
+                'slug': post[tid+6],
+                'title': post[tid+7],
+                'user': post[tid+8],
+                'dislikes': post[tid+9],
+                'likes': post[tid+10],
+                'points': post[tid+11],
+                'posts': post[tid+12],
+            }
+        # if "user" in related:
+        #     pf["user"] = users.details(short_name=pf["user"])
+        # if "forum" in related:
+        #     pf["forum"] = forums.details(short_name=pf["forum"], related=[])
+        # if "thread" in related:
+        #     pf["thread"] = threads.details(id=pf["thread"], related=[])
         post_list.append(pf)
+
     end = int(round(time.time() * 1000))
     print(end-begin)
     return post_list
