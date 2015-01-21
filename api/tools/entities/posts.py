@@ -108,6 +108,7 @@ def posts_list(entity, params, identifier, related=[]):
     for post in post_ids:
         if "user" in related:
             related_user += "'" + post[14] + "', "
+            print("USERS: "+related_user)
         if "forum" in related:
             related_forum += "'" + post[2] + "', "
         if "thread" in related:
@@ -115,6 +116,7 @@ def posts_list(entity, params, identifier, related=[]):
 
     if "user" in related:
         users_list = users.details_in(related_user[:len(related_user) - 2])
+        print(users_list)
     if "forum" in related:
         forum_list = forums.details_in(related_forum[:len(related_forum) - 2])
     if "thread" in related:
@@ -142,7 +144,8 @@ def posts_list(entity, params, identifier, related=[]):
         if "user" in related:
             ubeg = int(round(time.time() * 1000))
             # pf["user"] = users.details(pf["user"])
-            pf["user"] = users_list[pf["user"]]
+
+            pf["user"] = users_list.get(pf["user"])
             user_time += (int(round(time.time() * 1000)) - ubeg)
         if "forum" in related:
             fbeg = int(round(time.time() * 1000))
