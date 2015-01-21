@@ -46,6 +46,7 @@ def details_in(in_str):
     query = "SELECT id, name, short_name, user FROM forum WHERE short_name IN (%s);"
     forums = DBconnect.select_query(query, (in_str, ))
     forum_list = {}
+    print(forums)
     for forum in forums:
         forum = {
             'id': forum[0],
@@ -60,7 +61,7 @@ def details_in(in_str):
 def list_users(short_name, optional):
     # DBconnect.exist(entity="forum", identifier="short_name", value=short_name)
     query = "SELECT user.id, user.email, user.name, user.username, user.isAnonymous, user.about FROM user USE KEY (name_email) " \
-        "IN (SELECT DISTINCT user FROM post USE KEY (forum_user) WHERE forum = %s)  "
+        "WHERE user.email IN (SELECT DISTINCT user FROM post USE KEY (forum_user) WHERE forum = %s)"
 
     if "since_id" in optional:
         query += " AND user.id >= " + str(optional["since_id"])
@@ -70,7 +71,7 @@ def list_users(short_name, optional):
         # query += " ORDER BY user.name DESC"
     if "limit" in optional:
         query += " LIMIT " + str(optional["limit"])
-
+    print(query % (short_name, ))
     users_tuple = DBconnect.select_query(query, (short_name, ))
     list_u = []
 

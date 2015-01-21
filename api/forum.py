@@ -68,10 +68,10 @@ def list_users():
     content = get_json(request)
     required_data = ["forum"]
     optional = intersection(request=content, values=["limit", "order", "since_id"])
-    try:
-        choose_required(data=content, required=required_data)
-        users_l = forums.list_users(content["forum"], optional)
-    except Exception as e:
-        return json.dumps({"code": 1, "response": (e.message)})
+    # try:
+    choose_required(data=content, required=required_data)
+    users_l = forums.list_users(content["forum"], optional)
+    # except Exception as e:
+    #     return json.dumps({"code": 1, "response": (e.message)})
     print(json.dumps({"code": 0, "response": users_l}))
     return json.dumps({"code": 0, "response": users_l})
