@@ -54,12 +54,12 @@ def list_posts():
     related = related_exists(content)
 
     optional = intersection(request=content, values=["limit", "order", "since"])
-    try:
-        choose_required(data=content, required=required_data)
-        posts_l = posts.posts_list(entity="forum", params=optional, identifier=content["forum"],
+    # try:
+    choose_required(data=content, required=required_data)
+    posts_l = posts.posts_list(entity="forum", params=optional, identifier=content["forum"],
                                    related=related)
-    except Exception as e:
-        return json.dumps({"code": 1, "response": (e.message)})
+    # except Exception as e:
+    #     return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": posts_l})
 
 

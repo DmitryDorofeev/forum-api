@@ -33,13 +33,10 @@ def update_user(email, about, name):
 
 def followers(email, type):
     where = "followee"
-    if type == "follower":
-        where = "followee"
     if type == "followee":
         where = "follower"
     f_list = DBconnect.select_query(
-        "SELECT " + type + " FROM follower JOIN user ON user.email = follower." + type +
-        " WHERE " + where + " = %s ", (email, )
+        "SELECT " + type + " FROM follower WHERE " + where + " = %s ", (email, )
     )
     return tuple2list(f_list)
 
@@ -59,6 +56,23 @@ def details(email):
     user["following"] = tuple2list(f_list)
     user["subscriptions"] = user_subscriptions(email)
     return user
+
+
+def details_in(in_str):
+    query = "SELECT email, about, isAnonymous, id, name, username FROM user WHERE email IN (" + in_str + ")"
+    users = DBconnect.select_query(query)
+    user_list = {}
+    for user in users:
+        user = {
+            'about': user[1],
+            'email': user[0],
+            'id': user[3],
+            'isAnonymous': bool(user[2]),
+            'name': user[4],
+            'username': user[5]
+        }
+        user_list[user['email']] = user
+    return user_list
 
 
 def user_subscriptions(email):

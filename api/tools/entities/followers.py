@@ -41,7 +41,7 @@ def remove_follow(email1, email2):
 
 
 def followers_list(email, type, params):
-    DBconnect.exist(entity="user", identifier="email", value=email)
+    # DBconnect.exist(entity="user", identifier="email", value=email)
     if type == "follower":
         where = "followee"
     if type == "followee":

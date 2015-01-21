@@ -42,6 +42,21 @@ def details(short_name, related):
     return forum
 
 
+def details_in(in_str):
+    query = "SELECT id, name, short_name, user FROM forum WHERE short_name IN (" + in_str + ");"
+    forums = DBconnect.select_query(query)
+    forum_list = {}
+    for forum in forums:
+        forum = {
+            'id': forum[0],
+            'name': forum[1],
+            'short_name': forum[2],
+            'user': forum[3]
+        }
+        forum_list[forum['email']] = forum
+    return forum_list
+
+
 def list_users(short_name, optional):
     # DBconnect.exist(entity="forum", identifier="short_name", value=short_name)
     query = "SELECT user.id, user.email, user.name, user.username, user.isAnonymous, user.about FROM user USE KEY (name_email) " \

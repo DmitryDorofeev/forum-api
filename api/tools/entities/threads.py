@@ -86,6 +86,31 @@ def details(id, related):
     return thread
 
 
+def details_in(in_str):
+    query = "SELECT date, forum, id, isClosed, isDeleted, message, slug, title, user, dislikes, likes, points, posts FROM thread" \
+            " WHERE id IN (" + in_str + ");"
+    threads = DBconnect.select_query(query)
+    thread_list = {}
+    for thread in threads:
+        thread = {
+            'date': str(thread[0]),
+            'forum': thread[1],
+            'id': thread[2],
+            'isClosed': bool(thread[3]),
+            'isDeleted': bool(thread[4]),
+            'message': thread[5],
+            'slug': thread[6],
+            'title': thread[7],
+            'user': thread[8],
+            'dislikes': thread[9],
+            'likes': thread[10],
+            'points': thread[11],
+            'posts': thread[12],
+        }
+        thread_list[thread['email']] = thread
+    return thread_list
+
+
 def vote(id, vote):
     print("entered")
     try:
@@ -132,7 +157,7 @@ def thread_list(entity, identifier, related, params):
         query += " ORDER BY date DESC "
     if "limit" in params:
         query += " LIMIT " + str(params["limit"])
-    print(query % parameters)
+    print(query.format(parameters))
     begin = int(round(time.time() * 1000))
     thread_ids_tuple = DBconnect.select_query(query=query, params=parameters)
     end = int(round(time.time() * 1000))

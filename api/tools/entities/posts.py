@@ -94,13 +94,13 @@ def posts_list(entity, params, identifier, related=[]):
     if "limit" in params:
         query += " LIMIT " + str(params["limit"])
 
-    print (query % parameters)
+    print (query.format(identifier))
     begin = int(round(time.time() * 1000))
     post_ids = DBconnect.select_query(query=query, params=parameters)
     end = int(round(time.time() * 1000))
     print(end-begin)
     begin = int(round(time.time() * 1000))
-    user_time = forum_time = thread_time= 0
+    user_time = forum_time = thread_time = 0
     post_list = []
     for post in post_ids:
         pf = {
@@ -136,9 +136,9 @@ def posts_list(entity, params, identifier, related=[]):
         post_list.append(pf)
     end = int(round(time.time() * 1000))
     print(end-begin)
-    print("User %s" % user_time)
-    print("Forum %s" % forum_time)
-    print("Thread %s" % thread_time)
+    print("User %s" % (user_time, ))
+    print("Forum %s" % (forum_time,))
+    print("Thread %s" % (thread_time, ))
     return post_list
 
 
@@ -177,7 +177,7 @@ def post_query(id):
 def post_formated(post):
     post = post[0]
     post_response = {
-        'date': u'%s' % post[0],
+        'date': str(post[0]),
         'dislikes': post[1],
         'forum': post[2],
         'id': post[3],
