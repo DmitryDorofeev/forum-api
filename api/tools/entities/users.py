@@ -1,7 +1,7 @@
 __author__ = 'dmitry'
 
 from api.tools import DBconnect
-
+import time
 
 def save_user(email, username, about, name, optional):
     isAnonymous = 0
