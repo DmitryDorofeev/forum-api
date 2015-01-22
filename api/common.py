@@ -1,16 +1,12 @@
 def list_following(cursor, user_id):
-    cursor.execute("""SELECT `u1`.`email` FROM `users` AS `u1` IGNORE INDEX (PRIMARY)
-                      INNER JOIN `follower_followee` AS `ff` ON `u1`.`id` = `ff`.`followee`
-                      WHERE `ff`.`follower` = %s;""", user_id)
+    cursor.execute("""SELECT followee FROM follower WHERE follower = %s;""", user_id)
     following = [i['email'] for i in cursor.fetchall()]
 
     return following
 
 
 def list_followers(cursor, user_id):
-    cursor.execute("""SELECT `u1`.`email` FROM `users` AS `u1` IGNORE INDEX (PRIMARY)
-                      INNER JOIN `follower_followee` AS `ff` ON `u1`.`id` = `ff`.`follower`
-                      WHERE `ff`.`followee` = %s;""", user_id)
+    cursor.execute("""SELECT follower FROM follower WHERE followee = %s;""", user_id)
     followers = [i['email'] for i in cursor.fetchall()]
 
     return followers
@@ -23,10 +19,10 @@ def user_details(cursor, email):
     if user is None:
         return None
 
-    following = list_following(cursor, user['id'])
-    followers = list_followers(cursor, user['id'])
+    following = list_following(cursor, email)
+    followers = list_followers(cursor, email)
 
-    cursor.execute("""SELECT `thread` FROM `users_threads` WHERE `user` = %s;""", email)
+    cursor.execute("""SELECT `thread` FROM `subscribtion` WHERE `user` = %s;""", email)
     threads = [i['thread'] for i in cursor.fetchall()]
 
     user.update({'following': following, 'followers': followers, 'subscriptions': threads})

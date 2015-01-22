@@ -3,7 +3,7 @@ from flask import Blueprint, request
 from api.helpers import related_exists, choose_required, intersection, get_json
 import json
 import common
-from tools import DBconnect
+from tools.DBconnect import DBConnection
 import MySQLdb
 
 module = Blueprint('forum', __name__, url_prefix='/db/api/forum')
@@ -70,12 +70,12 @@ def list_posts():
 
     limit = long(limit)  # TODO: bad code
 
-    cursor = DBconnect.connect().cursor(MySQLdb.cursors.DictCursor)
+    cursor = DBConnection.connect().cursor(MySQLdb.cursors.DictCursor)
     if order == 'desc':
-        cursor.execute("""SELECT * FROM `posts` WHERE `forum` = %s AND `date` >= %s ORDER BY `date` DESC LIMIT %s;""",
+        cursor.execute("""SELECT * FROM `post` WHERE `forum` = %s AND `date` >= %s ORDER BY `date` DESC LIMIT %s;""",
                        (forum, since, limit))  # TODO: bad code - excess condition
     else:
-        cursor.execute("""SELECT * FROM `posts` WHERE `forum` = %s AND `date` >= %s ORDER BY `date` ASC LIMIT %s;""",
+        cursor.execute("""SELECT * FROM `post` WHERE `forum` = %s AND `date` >= %s ORDER BY `date` ASC LIMIT %s;""",
                        (forum, since, limit))  # TODO: bad code - excess condition
 
     posts = [i for i in cursor.fetchall()]
