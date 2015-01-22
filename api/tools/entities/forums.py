@@ -31,7 +31,7 @@ def forum_description(forum):
 
 def details(short_name, related):
     forum = DBconnect.select_query(
-        'select id, name, short_name, user FROM forum WHERE short_name = %s', (short_name, )
+        'select id, name, short_name, user FROM forum WHERE short_name = %s LIMIT 1;', (short_name, )
     )
     if len(forum) == 0:
         raise ("No forum with exists short_name=" + short_name)

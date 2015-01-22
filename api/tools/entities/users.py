@@ -41,7 +41,7 @@ def followers(email, type):
 
 
 def details(email):
-    user = DBconnect.select_query('select email, about, isAnonymous, id, name, username FROM user WHERE email = %s', (email, ))
+    user = DBconnect.select_query('select email, about, isAnonymous, id, name, username FROM user WHERE email = %s LIMIT 1;', (email, ))
     user = user_format(user)
     if user is None:
         raise Exception("No user with email " + email)

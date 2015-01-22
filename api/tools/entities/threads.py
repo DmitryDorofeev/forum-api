@@ -57,7 +57,7 @@ def save_thread(forum, title, isClosed, user, date, message, slug, optional):
 def details(id, related):
     thread = DBconnect.select_query(
         'select date, forum, id, isClosed, isDeleted, message, slug, title, user, dislikes, likes, points, posts '
-        'FROM thread WHERE id = %s', (id, )
+        'FROM thread WHERE id = %s LIMIT 1;', (id, )
     )
     if len(thread) == 0:
         raise Exception('No thread exists with id=' + str(id))

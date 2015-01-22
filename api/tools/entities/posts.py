@@ -169,7 +169,7 @@ def vote(vote_id, vote_type):
 def post_query(id):
     post = DBconnect.select_query('select date, dislikes, forum, id, isApproved, isDeleted, isEdited, '
                        'isHighlighted, isSpam, likes, message, parent, points, thread, user '
-                       'FROM post WHERE id = %s', (id, ))
+                       'FROM post WHERE id = %s LIMIT 1;', (id, ))
     if len(post) == 0:
         return None
     return post_formated(post)
