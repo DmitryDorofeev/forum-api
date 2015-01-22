@@ -8,8 +8,7 @@ def save_user(email, username, about, name, optional):
     if "isAnonymous" in optional:
         isAnonymous = optional["isAnonymous"]
     try:
-        user = DBconnect.select_query('SELECT email, about, isAnonymous, id, name, username FROM user WHERE email = %s',
-                           (email, ))
+        user = DBconnect.select_query('SELECT email, about, isAnonymous, id, name, username FROM user WHERE email = %s', (email, ))
         if len(user) == 0:
             DBconnect.update_query(
                 'INSERT INTO user (email, about, name, username, isAnonymous) VALUES (%s, %s, %s, %s, %s)',
@@ -42,7 +41,7 @@ def followers(email, type):
 
 
 def details(email):
-    user = DBconnect.select_query('select email, about, isAnonymous, id, name, username FROM user USE KEY (email) WHERE email = %s', (email, ))
+    user = DBconnect.select_query('select email, about, isAnonymous, id, name, username FROM user WHERE email = %s', (email, ))
     user = user_format(user)
     if user is None:
         raise Exception("No user with email " + email)
