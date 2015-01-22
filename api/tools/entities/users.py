@@ -1,7 +1,7 @@
 __author__ = 'dmitry'
 
 from api.tools import DBconnect
-import time
+
 
 def save_user(email, username, about, name, optional):
     isAnonymous = 0
@@ -42,13 +42,8 @@ def followers(email, type):
 
 def details(email):
     print("User details:")
-    ubeg = int(round(time.time() * 1000))
     user = DBconnect.select_query('select email, about, isAnonymous, id, name, username FROM user WHERE email = %s LIMIT 1;', (email, ))
-    uend = int(round(time.time() * 1000))
-    print(ubeg - uend)
     user = user_format(user)
-    print("User related:")
-    ubeg = int(round(time.time() * 1000))
     if user is None:
         raise Exception("No user with email " + email)
     f_list = DBconnect.select_query(
@@ -58,8 +53,6 @@ def details(email):
     f_list = DBconnect.select_query(
         "SELECT followee FROM follower WHERE follower = %s ", (email, )
     )
-    uend = int(round(time.time() * 1000))
-    print(ubeg - uend)
     user["following"] = tuple2list(f_list)
     user["subscriptions"] = user_subscriptions(email)
     return user

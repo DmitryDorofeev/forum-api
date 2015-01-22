@@ -1,7 +1,7 @@
 from api.tools.entities import users, forums, threads
 from api.tools import DBconnect
 from api.tools.DBconnect import DBConnection
-import time
+
 
 def create(date, thread, message, user, forum, optional):
     DBconnect.exist(entity="thread", identifier="id", value=thread)
@@ -77,9 +77,6 @@ def posts_list(entity, params, identifier, related=[]):
     #     DBconnect.exist(entity="thread", identifier="id", value=identifier)
     # if entity == "user":
     #     DBconnect.exist(entity="user", identifier="email", value=identifier)
-    # query = "SELECT date, dislikes, forum, id, isApproved, isDeleted, isEdited, isHighlighted, isSpam, likes, message,
-    #  parent, points, thread, user FROM post WHERE " + entity + " = %s "
-
     query = "SELECT date, dislikes, forum, id, isApproved, isDeleted, isEdited, isHighlighted, isSpam, likes, message, " \
             "parent, points, thread, user FROM post WHERE " + entity + " = %s "
 
@@ -94,12 +91,7 @@ def posts_list(entity, params, identifier, related=[]):
     if "limit" in params:
         query += " LIMIT " + str(params["limit"])
 
-    print (query.format(identifier))
-    begin = int(round(time.time() * 1000))
     post_ids = DBconnect.select_query(query=query, params=parameters)
-    end = int(round(time.time() * 1000))
-    print(end-begin)
-    begin = int(round(time.time() * 1000))
     user_time = forum_time = thread_time = 0
     post_list = []
 
@@ -123,23 +115,12 @@ def posts_list(entity, params, identifier, related=[]):
 
         }
         if "user" in related:
-            ubeg = int(round(time.time() * 1000))
             pf["user"] = users.details(pf["user"])
-            user_time += (int(round(time.time() * 1000)) - ubeg)
         if "forum" in related:
-            fbeg = int(round(time.time() * 1000))
             pf["forum"] = forums.details(short_name=pf["forum"], related=[])
-            forum_time += (int(round(time.time() * 1000)) - fbeg)
         if "thread" in related:
-            tbeg = int(round(time.time() * 1000))
             pf["thread"] = threads.details(id=pf["thread"], related=[])
-            thread_time += (int(round(time.time() * 1000)) - tbeg)
         post_list.append(pf)
-    end = int(round(time.time() * 1000))
-    print(end-begin)
-    print("User %s" % (user_time, ))
-    print("Forum %s" % (forum_time,))
-    print("Thread %s" % (thread_time, ))
     return post_list
 
 

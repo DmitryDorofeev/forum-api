@@ -1,5 +1,4 @@
 from api.tools.entities import users, forums
-import time
 __author__ = 'dmitry'
 
 from api.tools import DBconnect
@@ -161,12 +160,7 @@ def thread_list(entity, identifier, related, params):
         query += " ORDER BY date DESC "
     if "limit" in params:
         query += " LIMIT " + str(params["limit"])
-    print(query.format(parameters))
-    begin = int(round(time.time() * 1000))
     thread_ids_tuple = DBconnect.select_query(query=query, params=parameters)
-    end = int(round(time.time() * 1000))
-    print(end - begin)
-    begin = int(round(time.time() * 1000))
     thread_list = []
     for thread in thread_ids_tuple:
         thread = {
@@ -189,8 +183,6 @@ def thread_list(entity, identifier, related, params):
         if "forum" in related:
             thread["forum"] = forums.details(short_name=thread["forum"], related=[])
         thread_list.append(thread)
-    end = int(round(time.time() * 1000))
-    print(end - begin)
     return thread_list
 
 
