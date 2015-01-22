@@ -173,8 +173,8 @@ def list_users():
     order = qs.get('order', 'desc')
     order_sql = """ORDER BY User.name {}""".format(order)
 
-    sql = """SELECT User.user, User.email, User.name, User.username, User.isAnonymous, User.about FROM User \
-        WHERE User.email IN (SELECT DISTINCT user FROM Post WHERE forum = %(forum)s) {snc_sql} {ord_sql} \
+    sql = """SELECT User.user, User.email, User.name, User.username, User.isAnonymous, User.about FROM User FORCE KEY (name_email) \
+        WHERE User.email IN (SELECT DISTINCT user FROM Post FORCE KEY (forum_user) WHERE forum = %(forum)s) {snc_sql} {ord_sql} \
         {lim_sql};""".format(snc_sql=since_id_sql, lim_sql=limit_sql, ord_sql=order_sql)
 
     user_list_sql = db.execute(sql, {'forum': qs.get('forum')})

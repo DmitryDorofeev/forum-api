@@ -1,12 +1,11 @@
 import MySQLdb
-# import time
+import time
 
 DB_HOST = '127.0.0.1'
 DB_USER = 'root'
 DB_DATABASE = 'tech'
-# DB_DATABASE = 'tp_subd2'
 
-# current_milli_time = lambda: int(round(time.time() * 1000))
+current_milli_time = lambda: int(round(time.time() * 1000))
 
 
 class MyDatabase:
@@ -16,23 +15,18 @@ class MyDatabase:
         self.init_connection_and_cursor()
 
     def execute(self, sql, args=(), post=False):
-        # tm = current_milli_time()
-
-        # try:
+        tm = current_milli_time()
         self.cursor.execute(sql, args)
-        # except Exception as e:
-        #     print "Error %d: %s" % (e.args[0], e.args[1])
-
         if post:
             self.connection.commit()
-            # tm = current_milli_time() - tm
-            # if tm > 50:
-            #    print tm, " ", sql
+            tm = current_milli_time() - tm
+            if tm > 50:
+                print(tm + " " + sql)
             return self.cursor.lastrowid
 
-        # tm = current_milli_time() - tm
-        # if tm > 50:
-        #    print tm, " ", sql
+        tm = current_milli_time() - tm
+        if tm > 50:
+            print(tm + " " + sql)
         return self.cursor.fetchall()
 
     def close_connections(self):
