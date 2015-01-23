@@ -14,7 +14,7 @@ def path():
     for id in ids:
         res = DBconnect.select_query("SELECT parent, thread, id, path FROM post WHERE id = %s", (id, ))
         parent = res[0][0]
-        params = (id, )
+        params = [id]
         if parent == "NULL" or parent is None:
             query = "UPDATE post SET path = concat(thread, '.', id) WHERE id = %s;"
         else:
@@ -22,7 +22,7 @@ def path():
             path = DBconnect.select_query(query, (id, ))[0][0]
             query = "UPDATE post SET path = concat(%s, '.', id) WHERE id = %s;"
             params.append(path)
-        DBconnect.execute(query % params)
+        DBconnect.execute(query % tuple(params))
         query = "SELECT path FROM post WHERE id = %s;"
         print(DBconnect.select_query(query, (id))[0][0])
 
