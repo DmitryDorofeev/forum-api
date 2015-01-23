@@ -76,19 +76,25 @@ def list_users(short_name, optional):
     cursor = DBconnect.DBConnection.connect().cursor(MySQLdb.cursors.DictCursor)
     cursor.execute(query, (short_name, ))
     users_tuple = [i for i in cursor.fetchall()]
-    list_u = []
-    for user_sql in users_tuple:
-        email = user_sql[1]
-        list_u.append({
-            'id': user_sql[0],
-            'email': email,
-            'name': user_sql[2],
-            'username': user_sql[3],
-            'isAnonymous': user_sql[4],
-            'about': user_sql[5],
-            'subscriptions': users.user_subscriptions(email),
-            'followers': common.list_followers(cursor, email),
-            'following': common.list_following(cursor, email)
-        })
+    # list_u = []
+    # for user_sql in users_tuple:
+    #     email = user_sql['']
+    #     list_u.append({
+    #         'id': user_sql[0],
+    #         'email': email,
+    #         'name': user_sql[2],
+    #         'username': user_sql[3],
+    #         'isAnonymous': user_sql[4],
+    #         'about': user_sql[5],
+    #         'subscriptions': users.user_subscriptions(email),
+    #         'followers': common.list_followers(cursor, email),
+    #         'following': common.list_following(cursor, email)
+    #     })
 
-    return list_u
+    for user_sql in users_tuple:
+        followers = common.list_followers(cursor, user_sql['email']),
+        following = common.list_following(cursor, user_sql['email']),
+        user_sql.update({'followers': followers})
+        user_sql.update({'following': following})
+
+    return users_tuple
