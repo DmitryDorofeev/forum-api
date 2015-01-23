@@ -92,9 +92,12 @@ def list_users(short_name, optional):
     #     })
 
     for user_sql in users_tuple:
-        followers = common.list_followers(cursor, user_sql['email']),
-        following = common.list_following(cursor, user_sql['email']),
-        user_sql.update({'followers': followers})
-        user_sql.update({'following': following})
+        cursor.execute("""SELECT `thread` FROM `subscription` WHERE `user` = %s;""", (user_sql['email'], ))
+        sub = [i['thread'] for i in cursor.fetchall()]
+
+        followers = common.list_followers(cursor, user_sql['email'])
+        following = common.list_following(cursor, user_sql['email'])
+
+        user_sql.update({'following': following, 'followers': followers, 'subscriptions': sub})
 
     return users_tuple
