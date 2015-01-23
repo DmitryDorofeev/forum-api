@@ -13,7 +13,7 @@ def list_followers(cursor, user_id):
 
 
 def user_details(cursor, email):
-    cursor.execute("""SELECT * FROM `users` WHERE `email` = %s LIMIT 1;""", (email, ))
+    cursor.execute("""SELECT * FROM `user` WHERE `email` = %s LIMIT 1;""", (email, ))
     user = cursor.fetchone()
 
     if user is None:
@@ -30,13 +30,13 @@ def user_details(cursor, email):
 
 
 def forum_details(cursor, short_name):
-    cursor.execute("""SELECT * FROM `forums` WHERE `short_name` = %s LIMIT 1;""", (short_name, ))
+    cursor.execute("""SELECT * FROM `forum` WHERE `short_name` = %s LIMIT 1;""", (short_name, ))
     forum = cursor.fetchone()
     return forum
 
 
 def thread_details(cursor, id):
-    cursor.execute("""SELECT * FROM `threads` WHERE `id` = %s;""", (id, ))
+    cursor.execute("""SELECT * FROM `thread` WHERE `id` = %s;""", (id, ))
     thread = cursor.fetchone()
 
     if thread is None:
