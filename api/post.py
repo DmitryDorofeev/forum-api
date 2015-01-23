@@ -4,7 +4,6 @@ import json
 from api.helpers import choose_required, intersection, related_exists, get_json
 from api.tools import DBconnect
 
-
 module = Blueprint('post', __name__, url_prefix='/db/api/post')
 
 @module.route("/path/", methods=["GET"])
@@ -13,17 +12,20 @@ def path():
     ids = DBconnect.select_query(query, ())
     for id in ids:
         id = id[0]
+        print(id)
         res = DBconnect.select_query("SELECT parent, thread, id, path FROM post WHERE id = %s", (id, ))
         parent = res[0][0]
         if parent == "NULL" or parent is None:
             query = "UPDATE post SET path = concat(thread, '.', id) WHERE id = %s;"
         else:
             query = "SELECT path FROM post WHERE id = %s;"
-            path = DBconnect.select_query(query, (id, ))[0][0]
-            query = "UPDATE post SET path = concat(" + path + ", '.', id) WHERE id = %s;"
+            path = DBconnect.select_query(query, (parent, ))[0][0]
+            query = "UPDATE post SET path = concat('" + path + "', '.', id) WHERE id = %s;"
         DBconnect.execute(query % (id, ))
         query = "SELECT path FROM post WHERE id = %s;"
-        print(DBconnect.select_query(query, (id))[0][0])
+        print(DBconnect.select_query(query, (id, ))[0][0])
+    return "ok"
+
 
 @module.route("/create/", methods=["POST"])
 def create():
