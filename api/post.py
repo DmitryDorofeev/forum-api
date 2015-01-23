@@ -12,6 +12,7 @@ def path():
     query = "SELECT id FROM post;"
     ids = DBconnect.select_query(query, ())
     for id in ids:
+        id = id[0]
         res = DBconnect.select_query("SELECT parent, thread, id, path FROM post WHERE id = %s", (id, ))
         parent = res[0][0]
         params = [id]
