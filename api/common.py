@@ -22,7 +22,7 @@ def user_details(cursor, email):
     following = list_following(cursor, email)
     followers = list_followers(cursor, email)
 
-    cursor.execute("""SELECT `thread` FROM `subscribtion` WHERE `user` = %s;""", (email, ))
+    cursor.execute("""SELECT `thread` FROM `subscription` WHERE `user` = %s;""", (email, ))
     threads = [i['thread'] for i in cursor.fetchall()]
 
     user.update({'following': following, 'followers': followers, 'subscriptions': threads})
