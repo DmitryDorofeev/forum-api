@@ -3,7 +3,7 @@ __author__ = 'dmitry'
 from api.tools import DBconnect
 from api.tools.entities import users
 import MySQLdb
-import common
+from api import common
 
 
 def save_forum(name, short_name, user):
