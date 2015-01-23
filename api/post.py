@@ -2,10 +2,29 @@ from api.tools.entities import posts, threads
 from flask import Blueprint, request
 import json
 from api.helpers import choose_required, intersection, related_exists, get_json
+from api.tools import DBconnect
 
 
 module = Blueprint('post', __name__, url_prefix='/db/api/post')
 
+@module.route("/path/", methods=["GET"])
+def path():
+    query = "SELECT id FROM post;"
+    ids = DBconnect.select_query(query, ())
+    for id in ids:
+        res = DBconnect.select_query("SELECT parent, thread, id, path FROM post WHERE id = %s", (id, ))
+        parent = res[0][0]
+        params = (id, )
+        if parent == "NULL" or parent is None:
+            query = "UPDATE post SET path = concat(thread, '.', id) WHERE id = %s;"
+        else:
+            query = "SELECT path FROM post WHERE id = %s;"
+            path = DBconnect.select_query(query, (id, ))[0][0]
+            query = "UPDATE post SET path = concat(%s, '.', id) WHERE id = %s;"
+            params.append(path)
+        DBconnect.execute(query % params)
+        query = "SELECT path FROM post WHERE id = %s;"
+        print(DBconnect.select_query(query, (id))[0][0])
 
 @module.route("/create/", methods=["POST"])
 def create():

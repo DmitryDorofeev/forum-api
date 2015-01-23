@@ -78,49 +78,84 @@ def posts_list(entity, params, identifier, related=[]):
     # if entity == "user":
     #     DBconnect.exist(entity="user", identifier="email", value=identifier)
     query = "SELECT date, dislikes, forum, id, isApproved, isDeleted, isEdited, isHighlighted, isSpam, likes, message, " \
-            "parent, points, thread, user FROM post WHERE " + entity + " = %s "
+            "parent, points, thread, user, path FROM post WHERE " + entity + " = %s "
 
     parameters = [identifier]
     if "since" in params:
         query += " AND date >= %s"
         parameters.append(params["since"])
-    if "order" in params:
-        query += " ORDER BY date " + params["order"]
+
+    if "sort" in params:
+        if params["sort"] == "flat":
+            query += " ORDER BY date "
+        elif params["sort"] == "tree":
+            query += " ORDER BY " + params["order"] == "desc" and " SUBSTRING_INDEX(path, '.', 2) DESC, " \
+                "TRIM(LEADING SUBSTRING_INDEX(path, '.', 2) FROM path) " or " path "
+            if "limit" in params:
+                query += " LIMIT " + str(params["limit"])
+        else:
+            bound_query = "SELECT SUBSTRING_INDEX(MIN(t.path), '.', 2) AS left_bound FROM "\
+                "(SELECT path FROM post WHERE thread = %s AND parent IS NULL ORDER BY path " + params["order"] or ""
+            if "limit" in params:
+                bound_query += " LIMIT " + str(params["limit"])
+            bound_query += ") AS t;"
+            left = DBconnect.select_query(bound_query, (identifier, ))[0][0]
+            bound_query = "SELECT MAX(t.path) AS left_bound FROM "\
+                "(SELECT path FROM post WHERE thread = %s AND parent IS NULL ORDER BY path " + params["order"] or ""
+            if "limit" in params:
+                bound_query += " LIMIT " + str(params["limit"])
+            bound_query += ") AS t;"
+            right = DBconnect.select_query(bound_query, (identifier, ))[0][0]
+
+            query += " AND SUBSTRING_INDEX(path, '.', 2) BETWEEN %s AND %s ORDER BY " + \
+                params["order"] == "desc" and " SUBSTRING_INDEX(path, '.', 2) DESC, " \
+                "TRIM(LEADING SUBSTRING_INDEX(path, '.', 2) FROM path) " or " path "
+            parameters.append(left)
+            parameters.append(right)
     else:
-        query += " ORDER BY date DESC"
-    if "limit" in params:
-        query += " LIMIT " + str(params["limit"])
+        if "order" in params:
+            query += " ORDER BY date " + params["order"]
+        else:
+            query += " ORDER BY date DESC"
+        if "limit" in params:
+            query += " LIMIT " + str(params["limit"])
 
     post_ids = DBconnect.select_query(query=query, params=parameters)
-    user_time = forum_time = thread_time = 0
     post_list = []
 
-    for post in post_ids:
-        pf = {
-            'date': str(post[0]),
-            'dislikes': post[1],
-            'forum': post[2],
-            'id': post[3],
-            'isApproved': bool(post[4]),
-            'isDeleted': bool(post[5]),
-            'isEdited': bool(post[6]),
-            'isHighlighted': bool(post[7]),
-            'isSpam': bool(post[8]),
-            'likes': post[9],
-            'message': post[10],
-            'parent': post[11],
-            'points': post[12],
-            'thread': post[13],
-            'user': post[14],
-
-        }
-        if "user" in related:
-            pf["user"] = users.details(pf["user"])
-        if "forum" in related:
-            pf["forum"] = forums.details(short_name=pf["forum"], related=[])
-        if "thread" in related:
-            pf["thread"] = threads.details(id=pf["thread"], related=[])
-        post_list.append(pf)
+    if "sort" in params and params["sort"] != "flat":
+        for post in post_ids:
+            path = post[15].split('.')
+            flag1 = False
+            flag2 = False
+            for current in path:
+                pass
+    else:
+        for post in post_ids:
+            pf = {
+                'date': str(post[0]),
+                'dislikes': post[1],
+                'forum': post[2],
+                'id': post[3],
+                'isApproved': bool(post[4]),
+                'isDeleted': bool(post[5]),
+                'isEdited': bool(post[6]),
+                'isHighlighted': bool(post[7]),
+                'isSpam': bool(post[8]),
+                'likes': post[9],
+                'message': post[10],
+                'parent': post[11],
+                'points': post[12],
+                'thread': post[13],
+                'user': post[14],
+            }
+            if "user" in related:
+                pf["user"] = users.details(pf["user"])
+            if "forum" in related:
+                pf["forum"] = forums.details(short_name=pf["forum"], related=[])
+            if "thread" in related:
+                pf["thread"] = threads.details(id=pf["thread"], related=[])
+            post_list.append(pf)
     return post_list
 
 

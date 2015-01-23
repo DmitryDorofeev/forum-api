@@ -174,7 +174,7 @@ def list_posts():
     content = get_json(request)
     required_data = ["thread"]
     entity = "thread"
-    optional = intersection(request=content, values=["limit", "order", "since"])
+    optional = intersection(request=content, values=["limit", "order", "since", "sort"])
     try:
         choose_required(data=content, required=required_data)
         p_list = posts.posts_list(entity=entity, params=optional, identifier=content["thread"], related=[])
