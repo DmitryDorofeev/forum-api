@@ -2,6 +2,8 @@ __author__ = 'dmitry'
 
 from api.tools import DBconnect
 from api.tools.entities import users
+import MySQLdb
+import common
 
 
 def save_forum(name, short_name, user):
@@ -60,8 +62,8 @@ def details_in(in_str):
 
 def list_users(short_name, optional):
     # DBconnect.exist(entity="forum", identifier="short_name", value=short_name)
-    query = "SELECT user.id, user.email, user.name, user.username, user.isAnonymous, user.about FROM user FORCE KEY (name_email) " \
-        "WHERE user.email IN (SELECT DISTINCT user FROM post FORCE KEY (forum_user) WHERE forum = %s)"
+    query = "SELECT user.id, user.email, user.name, user.username, user.isAnonymous, user.about FROM user USE KEY (name_email) " \
+        "WHERE user.email IN (SELECT DISTINCT user FROM post USE KEY (forum_user) WHERE forum = %s)"
 
     if "since_id" in optional:
         query += " AND user.id >= " + str(optional["since_id"])
@@ -71,9 +73,10 @@ def list_users(short_name, optional):
         # query += " ORDER BY user.name DESC"
     if "limit" in optional:
         query += " LIMIT " + str(optional["limit"])
-    users_tuple = DBconnect.select_query(query, (short_name, ))
+    cursor = DBconnect.DBConnection.connect().cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute(query, (short_name, ))
+    users_tuple = [i for i in cursor.fetchall()]
     list_u = []
-
     for user_sql in users_tuple:
         email = user_sql[1]
         list_u.append({
@@ -84,8 +87,8 @@ def list_users(short_name, optional):
             'isAnonymous': user_sql[4],
             'about': user_sql[5],
             'subscriptions': users.user_subscriptions(email),
-            'followers': users.followers(email, "follower"),
-            'following': users.followers(email, "followee")
+            'followers': common.list_followers(cursor, email),
+            'following': common.list_following(cursor, email)
         })
 
     return list_u
