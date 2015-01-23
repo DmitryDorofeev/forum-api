@@ -69,8 +69,8 @@ def list_posts():
     related = request.args.getlist('related')
 
     limit = long(limit)  # TODO: bad code
-
-    cursor = DBConnection.connect().cursor(MySQLdb.cursors.DictCursor)
+    connection = DBConnection.connect()
+    cursor = connection.cursor(MySQLdb.cursors.DictCursor)
     if order == 'desc':
         cursor.execute("""SELECT * FROM `post` WHERE `forum` = %s AND `date` >= %s ORDER BY `date` DESC LIMIT %s;""",
                        (forum, since, limit))  # TODO: bad code - excess condition
@@ -96,7 +96,7 @@ def list_posts():
         post.update({'date': str(post['date'])})  # TODO: bad code
 
     cursor.close()
-
+    connection.close()
     # except Exception as e:
     #     return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": posts})

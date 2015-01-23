@@ -73,7 +73,8 @@ def list_users(short_name, optional):
         # query += " ORDER BY user.name DESC"
     if "limit" in optional:
         query += " LIMIT " + str(optional["limit"])
-    cursor = DBconnect.DBConnection.connect().cursor(MySQLdb.cursors.DictCursor)
+    connection = DBconnect.DBConnection.connect()
+    cursor = connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute(query, (short_name, ))
     users_tuple = [i for i in cursor.fetchall()]
     # list_u = []
@@ -99,5 +100,6 @@ def list_users(short_name, optional):
         following = common.list_following(cursor, user_sql['email'])
 
         user_sql.update({'following': following, 'followers': followers, 'subscriptions': sub})
-
+    cursor.close()
+    connection.close()
     return users_tuple
