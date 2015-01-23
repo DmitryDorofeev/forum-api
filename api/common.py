@@ -13,7 +13,7 @@ def list_followers(cursor, user_id):
 
 
 def user_details(cursor, email):
-    cursor.execute("""SELECT * FROM `users` WHERE `email` = %s;""", email)
+    cursor.execute("""SELECT * FROM `users` WHERE `email` = %s LIMIT 1;""", (email, ))
     user = cursor.fetchone()
 
     if user is None:
@@ -22,7 +22,7 @@ def user_details(cursor, email):
     following = list_following(cursor, email)
     followers = list_followers(cursor, email)
 
-    cursor.execute("""SELECT `thread` FROM `subscribtion` WHERE `user` = %s;""", email)
+    cursor.execute("""SELECT `thread` FROM `subscribtion` WHERE `user` = %s;""", (email, ))
     threads = [i['thread'] for i in cursor.fetchall()]
 
     user.update({'following': following, 'followers': followers, 'subscriptions': threads})
@@ -30,13 +30,13 @@ def user_details(cursor, email):
 
 
 def forum_details(cursor, short_name):
-    cursor.execute("""SELECT * FROM `forums` WHERE `short_name` = %s;""", short_name)
+    cursor.execute("""SELECT * FROM `forums` WHERE `short_name` = %s LIMIT 1;""", (short_name, ))
     forum = cursor.fetchone()
     return forum
 
 
 def thread_details(cursor, id):
-    cursor.execute("""SELECT * FROM `threads` WHERE `id` = %s;""", id)
+    cursor.execute("""SELECT * FROM `threads` WHERE `id` = %s;""", (id, ))
     thread = cursor.fetchone()
 
     if thread is None:
