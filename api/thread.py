@@ -175,9 +175,9 @@ def list_posts():
     required_data = ["thread"]
     entity = "thread"
     optional = intersection(request=content, values=["limit", "order", "since", "sort"])
-    try:
-        choose_required(data=content, required=required_data)
-        p_list = posts.posts_list(entity=entity, params=optional, identifier=content["thread"], related=[])
-    except Exception as e:
-        return json.dumps({"code": 1, "response": (e.message)})
+    # try:
+    choose_required(data=content, required=required_data)
+    p_list = posts.posts_list(entity=entity, params=optional, identifier=content["thread"], related=[])
+    # except Exception as e:
+    #     return json.dumps({"code": 1, "response": (e.message)})
     return json.dumps({"code": 0, "response": p_list})

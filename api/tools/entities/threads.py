@@ -188,7 +188,12 @@ def thread_list(entity, identifier, related, params):
 
 def remove_restore(thread_id, status):
     DBconnect.exist(entity="thread", identifier="id", value=thread_id)
-    DBconnect.update_query("UPDATE thread SET isDeleted = %s WHERE id = %s", (status, thread_id, ))
+    if status == 1:
+        posts = 0
+    else:
+        posts = DBconnect.select_query("SELECT COUNT(id) FROM post WHERE thread = %s", (thread_id, ))[0]
+
+    DBconnect.update_query("UPDATE thread SET isDeleted = %s, posts = %s WHERE id = %s", (status, posts, thread_id, ))
     DBconnect.update_query("UPDATE post SET isDeleted = %s WHERE thread = %s", (status, thread_id, ))
     response = {
         "thread": thread_id

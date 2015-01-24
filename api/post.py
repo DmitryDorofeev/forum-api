@@ -33,27 +33,27 @@ def create():
     required_data = ["user", "forum", "thread", "message", "date"]
     optional_data = ["parent", "isApproved", "isHighlighted", "isEdited", "isSpam", "isDeleted"]
     optional = intersection(request=content, values=optional_data)
-    try:
-        choose_required(data=content, required=required_data)
-        post = posts.create(date=content["date"], thread=content["thread"],
-                            message=content["message"], user=content["user"],
-                            forum=content["forum"], optional=optional)
-    except Exception as e:
-        print e.message
-        return json.dumps({"code": 0, "response": {
-            'date': content["date"],
-            'forum': content["forum"],
-            'id': 1,
-            'isApproved': True,
-            'isDeleted': False,
-            'isEdited': False,
-            'isHighlighted': False,
-            'isSpam': False,
-            'message': content["message"],
-            'thread': content["thread"],
-            'user': 1
-        }
-        })
+    # try:
+    choose_required(data=content, required=required_data)
+    post = posts.create(date=content["date"], thread=content["thread"],
+                        message=content["message"], user=content["user"],
+                        forum=content["forum"], optional=optional)
+    # except Exception as e:
+    #     print e.message
+    #     return json.dumps({"code": 0, "response": {
+    #         'date': content["date"],
+    #         'forum': content["forum"],
+    #         'id': 1,
+    #         'isApproved': True,
+    #         'isDeleted': False,
+    #         'isEdited': False,
+    #         'isHighlighted': False,
+    #         'isSpam': False,
+    #         'message': content["message"],
+    #         'thread': content["thread"],
+    #         'user': 1
+    #     }
+    #     })
     print "ok"
     return json.dumps({"code": 0, "response": post})
 
